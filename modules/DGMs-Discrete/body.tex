@@ -1,0 +1,105 @@
+
+
+\begin{frame}{Generative Models}
+Joint distribution over observed data $ x $ and latent variables $ Z $.
+\begin{equation*}
+p(x,z|\theta) =  \underbrace{p(z)}_{\text{prior}} \underbrace{p(x|z,\theta)}_{\text{likelihood}}
+\end{equation*} 
+The likelihood and prior are often standard distributions (Gaussian, Bernoulli) with simple dependence on conditioning
+information.
+\end{frame}
+
+\begin{frame}{Deep generative models}
+
+Joint distribution with {\bf deep observation model}
+\begin{equation*}
+p(x, z|\theta) = \underbrace{p(z)}_{\text{prior}} \underbrace{p(x|z, \theta)}_{\text{likelihood}}
+\end{equation*}
+~ {\small mapping from $z$ to $p(x|z, \theta)$ is a NN with parameters $\theta$}
+
+~ \pause
+
+Marginal likelihood 
+\begin{equation*}
+p(x|\theta) = \int p(x, z|\theta) \dd{z} = \int p(z)p(x|z, \theta) \dd{z} 
+\end{equation*}
+~ \alert{intractable} in general
+
+
+
+\end{frame}
+
+
+\begin{frame}{Goals}
+
+
+We want
+\begin{itemize}
+	\item richer probabilistic models  \pause
+	\item complex observation models \\
+	parameterised by NNs 
+	%\item but we cannot use backprop for parameter estimation \\
+	%due to intractability of log-marginal and its gradient
+\end{itemize}
+\pause
+but we can't perform gradient-based MLE
+
+~
+
+\pause
+
+We need \alert{approximate inference} techniques!
+
+\end{frame}
+
+
+\section{First Attempt: Wake-Sleep}
+\frame{\tableofcontents[currentsection]}
+
+
+\input{WS}
+
+\section{Neural Variational Inference}
+\frame{\tableofcontents[currentsection]}
+
+\input{NVIL}
+
+\begin{frame}{Summary}
+\begin{itemize}
+\item Wake-Sleep: train inference and generation networks with separate objectives
+\pause
+\item NVIL: a single objective (ELBO) for both models\\ \pause
+\item Use score function estimator\\ 
+\pause
+\item Always use baselines for variance reduction!
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Implementation}
+
+Check one of our notebooks, e.g.
+\begin{itemize}
+	\item inducing rationales for sentiment classification \\
+\url{https://github.com/probabll/dgm4nlp/tree/master/notebooks/sst}
+\end{itemize}
+
+
+\end{frame}
+
+\begin{frame}[allowframebreaks]{Literature}
+%\nocite{KingmaWelling:2013}
+\nocite{HintonEtAl:1995}
+\nocite{MnihNVIL}
+\nocite{greensmith2004variance}
+%\nocite{RezendeEtAl:2014}
+%\nocite{TitsiasLazarogredilla:2014}
+%\nocite{BergkirkpatrickEtAl:2010}
+%\nocite{KucukelbirEtAl:2017}
+ \nocite{PaisleyEtAl:2012}
+ \nocite{RanganathEtAl:2014}
+ \nocite{GregorEtAl:2014}
+
+
+\bibliographystyle{plainnat}
+\bibliography{../../VI}
+\end{frame}

@@ -1,0 +1,36 @@
+\ProvidesPackage{deps}
+
+\usepackage{amsmath, amssymb, physics, xfrac}
+\usepackage{hyperref, enumerate, multicol, verbatim, subcaption}
+\usepackage[round]{natbib}
+
+\usepackage{tikz}
+\usetikzlibrary{bayesnet}
+\usetikzlibrary{positioning, fit, shapes.misc, patterns}
+
+
+\makeatletter
+\let\@@magyar@captionfix\relax
+\makeatother
+
+
+\hypersetup{colorlinks,allcolors=.,urlcolor=blue,citecolor=blue}
+\setbeamercolor{item projected}{bg=red!70!black,fg=white}
+
+
+\newcommand\Wider[2][3em]{%
+\makebox[\linewidth][c]{%
+  \begin{minipage}{\dimexpr\textwidth+#1\relax}
+  \raggedright#2
+  \end{minipage}%
+  }%
+}
+
+
+% Coloring
+\definecolor{asparagus}{rgb}{0.53, 0.66, 0.42}
+\definecolor{britishracinggreen}{rgb}{0.0, 0.26, 0.15}
+\definecolor{darkcyan}{rgb}{0.0, 0.55, 0.55}
+\newcommand{\balert}[1]{\textcolor{blue}{#1}}
+\newcommand{\galert}[1]{\textcolor{darkcyan}{#1}}
+
