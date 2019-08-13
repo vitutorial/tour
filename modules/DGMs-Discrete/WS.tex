@@ -86,6 +86,8 @@
 \end{itemize}
 \end{frame}
 
+
+
 \begin{frame}{Wake Phase Objective}
 Objective  %
 
@@ -93,15 +95,16 @@ Objective  %
 
 \begin{equation*}
 \begin{aligned}
-&\argmin_{\theta} \KL{q(z|x, \lambda)}{\alert{p(z|x, \theta)}} \\ \pause
-&= \argmax_{\theta}~ \underbrace{\mathbb E_{q(z|x, \lambda)}\left[ \log p(z, x| \theta) \right] + \mathbb H[q(z|x, \lambda)]}_{\mathcal G(\theta)}  \pause
+%&\argmin_{\theta} \E[p(x)]{\KL{q(z|x, \lambda)}{\alert{p(z|x, \theta)}}} \\ \pause
+&\argmax_{\theta}~ \E[p(x)]{\ELBO(\theta, \lambda|x)} \\
+&=\argmax_{\theta}~ \E[p(x)]{\mathbb E_{q(z|x, \lambda)}\left[ \log p(z, x| \theta) \right] + \mathbb H[q(z|x, \lambda)] } \pause
 \end{aligned}
 \end{equation*}
 \vspace{-2pt}
-Gradient estimate
+Gradient wrt $\theta$ for $x \sim p(x)$
 \begin{equation*}
 \begin{aligned}
-\grad_\theta \mathcal G(\theta) &= \textcolor{blue}{\grad_\theta}  \mathbb E_{q(z|x, {\lambda})}\left[ \log p(z, x| \textcolor{blue}{\theta}) \right] + \textcolor{blue}{\grad_\theta} \mathbb H[q(z|x, {\lambda})] \\ \pause 
+& \textcolor{blue}{\grad_\theta}  \mathbb E_{q(z|x, {\lambda})}\left[ \log p(z, x| \textcolor{blue}{\theta}) \right] + \textcolor{blue}{\grad_\theta} \mathbb H[q(z|x, {\lambda})] \\ \pause 
 &=\mathbb E_{q(z|x, {\lambda})}\left[ \textcolor{blue}{\grad_\theta} \log p(z, x| \textcolor{blue}{\theta}) \right] \\ \pause
 &\overset{\text{MC}}{\approx} \textcolor{blue}{\grad_\theta} \log p(z, x| \textcolor{blue}{\theta}) \quad \textcolor{gray}{\text{where } z \sim q(z|x, \lambda)}
 \end{aligned}
@@ -111,14 +114,11 @@ Gradient estimate
 
 \begin{frame}{Wake Phase Objective}
 
-Assumes  $ z $ to be fixed random draw from $ q(z|x,\lambda) $.
+Assumes  $ z $ to be fixed random draw from $ q(z|x,\lambda) $ \\
+~ and maximises $\log p(z, x|\theta)$.
 
-\begin{equation*}
-\begin{aligned}
-&\argmin_{\theta} \KL{q(z|x, \lambda)}{\alert{p(z|x, \theta)}} \\ 
-&\overset{\text{MC}}{\approx} \argmax_\theta \log p(z, x| \theta) \quad\quad \textcolor{gray}{\text{for }z \sim q(z|x)}
-\end{aligned}
-\end{equation*} 
+~
+
 
 This is simply supervised learning with imputed latent data!
 
@@ -244,17 +244,18 @@ Objective  %
 
 \begin{equation*}
 \begin{aligned}
-&\argmin_{\lambda} \KL{q(z|x, \lambda)}{\alert{p(z|x, \theta)}} \\ \pause
-&= \argmax_{\lambda}~ \underbrace{\mathbb E_{q(z|x, \lambda)}\left[ \log p(z, x| \theta) \right] + \mathbb H[q(z|x, \lambda)]}_{\mathcal R(\lambda)}  \pause
+%&\argmin_{\theta} \E[p(x)]{\KL{q(z|x, \lambda)}{\alert{p(z|x, \theta)}}} \\ \pause
+&\argmax_{\theta}~ \E[p(x)]{\ELBO(\theta, \lambda|x)} \\
+&=\argmax_{\theta}~ \E[p(x)]{\mathbb E_{q(z|x, \lambda)}\left[ \log p(z, x| \theta) \right] + \mathbb H[q(z|x, \lambda)] } \pause
 \end{aligned}
 \end{equation*}
 
-Gradient estimate
+Gradient wrt $\lambda$ for $x \sim p(x)$
 
 \vspace{-10pt}
 \begin{equation*}
 \begin{aligned}
-\grad_\lambda \mathcal R(\lambda) &=  \alert{\grad_\lambda} \mathbb E_{q(z|x, \alert{\lambda})}\left[ \log p(z, x| \theta) \right] + \alert{\grad_\lambda} \alert{\mathbb H[q(z|x, \lambda)]} 
+&\alert{\grad_\lambda} \mathbb E_{q(z|x, \alert{\lambda})}\left[ \log p(z, x| \theta) \right] + \alert{\grad_\lambda} \alert{\mathbb H[q(z|x, \lambda)]} 
 \end{aligned}
 \end{equation*} 
 
@@ -271,20 +272,20 @@ Flip the direction of the KL
 \begin{equation*}
 \begin{aligned}
 &\argmin_{\lambda} \mathbb E_{p(x)}\left[ \KL{\alert{p(z|x, \theta)}}{q(z|x, \lambda)} \right] \\ \pause
-&= \argmin_{\lambda} \mathbb E_{p(x|\theta)}\mathbb E_{p(z|x, \theta)}\left[ \log p(z|x, \theta) - \log q(z|x, \lambda) \right] \\ \pause
-&= \argmax_{\lambda} \underbrace{\mathbb E_{p(x, z|\theta)}\left[ \log q(z|x, \lambda) \right]}_{\mathcal R(\lambda)} - \underbrace{\mathbb E_{p(x,z|\theta)}\left[ \log p(z|x, \theta) \right]}_{\text{constant}}  \pause
+&= \argmin_{\lambda} \mathbb E_{p(x)}\mathbb E_{p(z|x, \theta)}\left[ \log p(z|x, \theta) - \log q(z|x, \lambda) \right] \\ \pause
+&= \argmax_{\lambda} \mathbb E_{p(x, z|\theta)}\left[ \log q(z|x, \lambda) \right] - \underbrace{\mathbb E_{p(x,z|\theta)}\left[ \log p(z|x, \theta) \right]}_{\text{constant}}  \pause
 %&\overset{\text{MC}}{\approx} \argmax_{\lambda} \log q(z|\tilde{x}, \lambda) 
 \end{aligned}
 \end{equation*}
 \end{small}
 \vspace{-3pt}
-Gradient 
+Gradient wrt $\lambda$
 \vspace{-2pt}
 \begin{equation*}
 \begin{aligned}
-&\grad_\lambda \mathcal R(\lambda) = \textcolor{blue}{\grad_\lambda} \mathbb E_{p(x, z|\theta)}\left[ \log q(z|x, \textcolor{blue}{\lambda}) \right] \\ \pause
+&\textcolor{blue}{\grad_\lambda} \mathbb E_{p(x, z|\theta)}\left[ \log q(z|x, \textcolor{blue}{\lambda}) \right] \\ \pause
 &=  \mathbb E_{p(x, z|\theta)}\left[ \textcolor{blue}{\grad_\lambda}  \log q(z|x, \textcolor{blue}{\lambda}) \right]  \\ \pause
-&=  \mathbb E_{p(z)\textcolor{darkcyan}{p(x|z, \theta)}}\left[ \textcolor{blue}{\grad_\lambda}  \log q(z|x, \textcolor{blue}{\lambda}) \right]  
+&=  \mathbb E_{\textcolor{darkcyan}{p(z|\theta)p(x|z, \theta)}}\left[ \textcolor{blue}{\grad_\lambda}  \log q(z|x, \textcolor{blue}{\lambda}) \right]  
  %\overset{\text{MC}}{\approx} \argmax_{\lambda} \log q(z|\tilde{x}, \lambda) \\
 \end{aligned}
 \end{equation*}
@@ -294,15 +295,12 @@ Gradient
 \begin{frame}{Sleep Phase (Convenient) Objective}
 
 
-Assumes fake data $ \tilde{x} $ and latent variables $ z $ to be fixed random draws from $ p(x,z|\theta) $.
-\begin{equation*}
-\begin{aligned}
-&\argmax_{\lambda}~  \E[p(x, z|\theta)]{\log q(z|x, \lambda)} \pause \\
-&\overset{\text{MC}}{\approx} \argmax_{\lambda}~ \log q(z|\tilde x, \lambda)
-\end{aligned}
-\end{equation*} 
-
-where $ z \sim p(z)$ and $\tilde{x} \sim p(x|z)$ \hfill \alert{(fake data!)}
+Assumes \alert{fake data} $ \tilde{x} $ and latent variables $ z $ to be fixed random draws from $ p(x,z|\theta) $ via
+\begin{align*}
+z &\sim p(z|\theta) \\
+\tilde{x} &\sim p(x|z, \theta)
+\end{align*}
+and maximises $\log q(z|\tilde x, \lambda)$.
 
 \end{frame}
 
@@ -353,7 +351,7 @@ Sampling $(z, \tilde x) \sim p(x,z|\theta)$
 \end{frame}
 
 \begin{frame}[t]{Sleep Phase Update}
-\hfill Compute $\log q(z|x, \lambda)$ and update $\lambda$
+\hfill Compute $\log q(z|\tilde x, \lambda)$ and update $\lambda$
 \begin{figure}
 \center
 \begin{tikzpicture}
@@ -362,9 +360,9 @@ Sampling $(z, \tilde x) \sim p(x,z|\theta)$
 \node[draw, circle, fill=orange, below left =of z3] (z1) {$ z_{1} $};
 \node[draw, circle, fill=orange, below right = of z3] (z2) {$ z_{2} $};
 
-\node[draw, circle, fill=gray, below left= of z1] (in1) {$ \tilde{x}_{1} $};
-\node[draw, circle, fill=gray, below left=of z2] (in2) {$ \tilde{x}_{2} $}; 
-\node[draw, circle, fill=gray, below right= of z2] (in3) {$ \tilde{x}_{3} $};
+\node[draw, rectangle, fill=gray, below left= of z1] (in1) {$ \tilde{x}_{1} $};
+\node[draw, rectangle, fill=gray, below left=of z2] (in2) {$ \tilde{x}_{2} $}; 
+\node[draw, rectangle, fill=gray, below right= of z2] (in3) {$ \tilde{x}_{3} $};
 
 \draw[->, thick] (in1) -- (z1) node[midway, above, rotate=45] {$ \lambda $};
 \draw[->, thick] (in2) -- (z1) node[midway, above, rotate=315] {$ \lambda $};
