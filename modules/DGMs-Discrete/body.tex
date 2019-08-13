@@ -1,7 +1,7 @@
 
 
 \begin{frame}{Generative Models}
-Joint distribution over observed data $ x $ and latent variables $ Z $.
+Joint distribution over observed data $ x $ and latent variables $ z $.
 \begin{equation*}
 p(x,z|\theta) =  \underbrace{p(z)}_{\text{prior}} \underbrace{p(x|z,\theta)}_{\text{likelihood}}
 \end{equation*} 
@@ -53,6 +53,23 @@ We need \alert{approximate inference} techniques!
 \end{frame}
 
 
+\begin{frame}{ELBO recap}
+
+And we've developed the ELBO
+\begin{equation*}
+\begin{aligned}
+\log p(x) &= \log \int p(z, x) \dd z ~ \pause = \log \int q(z|x) \frac{p(z, x)}{q(z|x)} \dd z \\ \pause
+&\overset{\text{JI}}{\ge} \underbrace{\E[q(z|x)]{\log \frac{p(z, x)}{q(z|x)}} }_{\ELBO} %\\ &= \E[q(z|x)]{\log p(x, z)} + \Ent{q(z|x)}
+& \\ \pause
+\ELBO &= \E[q(z|x)]{\log \frac{p(z|x)p(x)}{q(z|x)}} \\
+%&=\E[q(z|x)]{\log \frac{p(z|x)}{q(z|x)}} + \log p(x) \\
+&=-\underbrace{\KL{q(z|x)}{p(z|x)}}_{\text{gap}} + \log p(x)
+\end{aligned}
+\end{equation*}
+
+\end{frame}
+
+
 \section{First Attempt: Wake-Sleep}
 \frame{\tableofcontents[currentsection]}
 
@@ -80,7 +97,7 @@ We need \alert{approximate inference} techniques!
 Check one of our notebooks, e.g.
 \begin{itemize}
 	\item inducing rationales for sentiment classification \\
-\url{https://github.com/probabll/dgm4nlp/tree/master/notebooks/sst}
+\url{github.com/vitutorial/exercises/tree/master/SST}
 \end{itemize}
 
 
