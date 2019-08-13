@@ -27,6 +27,7 @@ Check `modules` for the lectures, we recommend the following order:
 * DGMs-Continuous
 * ADVI
 * NFs
+* DGMs-Relaxations
 
 # <a name="contact"> Contact
 
