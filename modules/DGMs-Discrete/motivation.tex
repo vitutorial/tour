@@ -1,0 +1,83 @@
+\begin{frame}{Who am I}
+
+	I'm an assistant professor at the University of Amsterdam \\
+	~ \url{probabll.github.io}
+	
+	~
+	
+	Stuff I typically work on
+	\begin{itemize}
+		\item machine learning\\
+		VAEs, NFs, gradient estimation for discrete variables
+		\item probabilistic models\\
+		Bayesian models, deep latent variable models
+		\item natural language processing\\
+		translation, parsing, text classification, question answering
+	\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Why discrete latent variable models}
+
+	Discreteness is everywhere!
+	\begin{itemize}
+		\item Natural languages (text)
+		\item Programming languages
+		\item DNA sequences and molecules
+		\item Knowledge graphs
+		\item Social networks
+	\end{itemize}
+	
+\end{frame}
+
+\begin{frame}{Classic discrete latent variable models}
+	
+	\begin{itemize}
+		\item Mixture models: MoG \\
+		\item State space models: Hidden Markov Model (HMM) 
+		\item Hierarchical models: Latent Dirichlet Allocation (LDA), Factorical HMMs
+		\item Feature models: Indian Buffet Process (IBP)
+	\end{itemize}
+	
+	\pause
+	
+	Discreteness can be use to encode inductive biases 
+	\begin{itemize}
+		\item e.g. discrete sources of variation\\
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{Building block}
+
+	\begin{columns}
+	\begin{column}{0.15\textwidth}
+	\begin{tikzpicture}
+    % Define nodes
+    \node[latent]		(z)		{$ z $};
+    \node[obs, below = of z]		(x)		{$ x $};
+    \node[right = of x]		(theta)		{$ \theta $};
+    
+    % Connect nodes
+    \edge{z,theta}{x};
+    
+    % add plates
+    \plate {x-sentence} {(x)} {$ N $};
+   
+    \node[right = of z]		(lambda)		{$ \lambda $};   
+    \edge[dashed, blue, bend right]{x}{z};
+    \edge[blue]{lambda}{z};
+    \end{tikzpicture}
+    \end{column}
+    ~
+    \begin{column}{0.75\textwidth}
+    	\begin{itemize}
+			\item $z$ can be a category, a binary feature vector, a sequence, a tree, a graph 
+			\item we pick a convenient likelihood function for $X|z$ depending on the nature of the data (e.g. Bernoulli, Categorical, Gaussian, Product of independent or correlated Bernoullis/Categoricals/Gaussians). 
+		\end{itemize}
+    \end{column}
+    \end{columns}
+    
+    ~
+    
+    \alert{Key: distributions are parameterised by NNs}
+\end{frame}
