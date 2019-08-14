@@ -33,7 +33,7 @@
 	\begin{equation*}
 		\begin{aligned}
 		f_{Z|\lambda}(z) &= s(\underbrace{\inv{t}(z, \lambda)}_{\epsilon }) \djac{\inv{t}}{z, \lambda}  \\ \pause
-		\mathbb E_{f_{Z|\lambda}(z)}\left[ \psi(z) \right] &= \pause \underbrace{\mathbb E_{s(\epsilon)}\left[ \psi(t(\epsilon, \lambda) \right]}_{\text{\textcolor{blue}{check class on ADVI}}}
+		\mathbb E_{f_{Z|\lambda}(z)}\left[ \psi(z) \right] &= \pause \underbrace{\mathbb E_{s(\epsilon)}\left[ \psi(t(\epsilon, \lambda)) \right]}_{\text{\textcolor{blue}{check class on ADVI}}}
 		\end{aligned}
 	\end{equation*}
 \end{frame}
@@ -42,7 +42,7 @@
 
 	\begin{equation*}
 		\begin{aligned}		
-		\pdv{\lambda}\mathbb E_{f_{Z|\lambda}(z)}\left[ \psi(z) \right] &= \mathbb E_{s(\epsilon)}\left[ \pdv{\lambda} \psi(t(\epsilon, \lambda) \right] \\ \pause
+		\pdv{\lambda}\mathbb E_{f_{Z|\lambda}(z)}\left[ \psi(z) \right] &= \mathbb E_{s(\epsilon)}\left[ \pdv{\lambda} \psi(t(\epsilon, \lambda)) \right] \\ \pause
 		&= \mathbb E_{s(\epsilon)}\left[ \pdv{z} \psi(z) \pdv{\lambda}  t(\epsilon, \lambda) \right] 
 		\end{aligned}
 	\end{equation*}
@@ -56,7 +56,7 @@
 
 	Reparameterised gradient\hfill Score function estimator
 	\begin{equation*}
-		\mathbb E_{s(\epsilon)}\left[ \underbrace{\pdv{z} \psi(z) \pdv{\lambda} t(\epsilon, \lambda)}_{\hat g_{\text{rep}}} \right]  ~ = ~ \mathbb E_{f_{\lambda}(z)}\left[\underbrace{\psi(z) \pdv{\lambda} f_{Z|\lambda}(z)}_{\hat g_{\text{sfe}}} \right]
+		\mathbb E_{s(\epsilon)}\left[ \underbrace{\textcolor{blue}{\pdv{z} \psi(z)} \pdv{\lambda} t(\epsilon, \lambda)}_{\hat g_{\text{rep}}} \right]  ~ = ~ \mathbb E_{f_{\lambda}(z)}\left[\underbrace{\alert{\psi(z)} \pdv{\lambda} f_{Z|\lambda}(z)}_{\hat g_{\text{sfe}}} \right]
 	\end{equation*}
 	
 	
@@ -70,11 +70,10 @@
 
 \begin{frame}{A general reparameterisation}
 
-	What transformation will always absorb the parameters of a density? \pause
+	What transformation will always absorb the parameters of a density $f_{Z|\lambda}(z)$? \pause
 	\begin{equation*}
 		\begin{aligned}
-			Z &\sim f_{Z|\lambda}(z) \\
-			F_{Z|\lambda}(z) &\sim \mathcal U(0, 1)			
+			\underbrace{F_{Z|\lambda}(z)}_{\text{\textcolor{blue}{cdf}}} &\sim \mathcal U(\underbrace{0, 1}_{\text{\textcolor{blue}{fixed}}})			
 		\end{aligned}
 	\end{equation*}
 	
@@ -84,7 +83,7 @@
 	\begin{equation*}
 		\begin{aligned}
 		\epsilon &\sim \mathcal U(0, 1) \\
-		z &= \inv{F}_{Z|\lambda}(\epsilon) 
+		\inv{F}_{Z|\lambda}(\epsilon) &\sim Z
 		\end{aligned}
 	\end{equation*}
 	do I have access to $\hat g_{\text{rep}}$?
@@ -105,9 +104,10 @@
 			Z &\sim \Bernoulli(p) \\ \pause
 			\inv{F}_{Z|p}(\epsilon) &= 
 			\begin{cases}
-			0 &\text{if }\epsilon < 1 - p \\
-			1 &\text{otherwise}
-			\end{cases}
+			1 &\text{if }\epsilon < p \\
+			0 &\text{otherwise}
+			\end{cases} \\
+			&= \mathds 1_{(0, p)}(\epsilon)
 		\end{aligned}
 	\end{equation*}
 	\end{column}
@@ -131,7 +131,7 @@
 	
 	~ \pause
 	
-	Ask the deep learning literature for help :D \\ \pause
+	Ask the deep learning literature for help ;D \\ \pause
 	~ \alert{Fake a Jacobian!}
 \end{frame}
 
@@ -142,7 +142,7 @@
 
 	In lack of a Jacobian, use the identity
 	\begin{equation*}
-		\jac{\inv{t}}{\epsilon, \lambda} = \diag(\mathbf 1)
+		\jac{t}{\epsilon, \lambda} = \diag(\mathbf 1)
 	\end{equation*}
 	
 	
@@ -156,7 +156,7 @@
 	We sample $z$ via a reparameterisation that absorbs $\lambda$:
 	\begin{equation*}
 		\begin{aligned}
-			\epsilon \sim \mathcal U(0, 1) & \quad & p = g(x; \lambda) & \quad & z= \underbrace{\mathds 1_{(0, p)}(\epsilon)}_{t} 
+			\epsilon \sim \mathcal U(0, 1) & \quad & p = g(x; \lambda) & \quad & z= \underbrace{\mathds 1_{(0, p)}(\epsilon)}_{t(\epsilon, \lambda)} 
 		\end{aligned}
 	\end{equation*}
 	\pause

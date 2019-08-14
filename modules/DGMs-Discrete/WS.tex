@@ -245,8 +245,8 @@ Objective  %
 \begin{equation*}
 \begin{aligned}
 %&\argmin_{\theta} \E[p(x)]{\KL{q(z|x, \lambda)}{\alert{p(z|x, \theta)}}} \\ \pause
-&\argmax_{\theta}~ \E[p(x)]{\ELBO(\theta, \lambda|x)} \\
-&=\argmax_{\theta}~ \E[p(x)]{\mathbb E_{q(z|x, \lambda)}\left[ \log p(z, x| \theta) \right] + \mathbb H[q(z|x, \lambda)] } \pause
+&\argmax_{\lambda}~ \E[p(x)]{\ELBO(\theta, \lambda|x)} \\
+&=\argmax_{\lambda}~ \E[p(x)]{\mathbb E_{q(z|x, \lambda)}\left[ \log p(z, x| \theta) \right] + \mathbb H[q(z|x, \lambda)] } \pause
 \end{aligned}
 \end{equation*}
 
@@ -285,8 +285,9 @@ Gradient wrt $\lambda$
 \begin{aligned}
 &\textcolor{blue}{\grad_\lambda} \mathbb E_{p(x, z|\theta)}\left[ \log q(z|x, \textcolor{blue}{\lambda}) \right] \\ \pause
 &=  \mathbb E_{p(x, z|\theta)}\left[ \textcolor{blue}{\grad_\lambda}  \log q(z|x, \textcolor{blue}{\lambda}) \right]  \\ \pause
-&=  \mathbb E_{\textcolor{darkcyan}{p(z|\theta)p(x|z, \theta)}}\left[ \textcolor{blue}{\grad_\lambda}  \log q(z|x, \textcolor{blue}{\lambda}) \right]  
- %\overset{\text{MC}}{\approx} \argmax_{\lambda} \log q(z|\tilde{x}, \lambda) \\
+%&=  \mathbb E_{\textcolor{darkcyan}{p(z|\theta)p(x|z, \theta)}}\left[ \textcolor{blue}{\grad_\lambda}  \log q(z|x, \textcolor{blue}{\lambda}) \right]  
+&\overset{\text{MC}}{\approx}  \textcolor{blue}{\grad_\lambda} \log q(z|\tilde{x}, \textcolor{blue}{\lambda} ) \quad \textcolor{gray}{\text{where } z \sim p(z|\theta)}\\
+&\phantom{\overset{\text{MC}}{\approx}  \textcolor{blue}{\grad_\lambda} \log q(z|\tilde{x}, \textcolor{blue}{\lambda} ) \quad \text{where }} \textcolor{gray}{~\tilde x \sim p(x|z,\theta)}
 \end{aligned}
 \end{equation*}
 %where $ z \sim p(z)$ and $\tilde{x} \sim p(x|z)$ \hfill \alert{(fake data!)}

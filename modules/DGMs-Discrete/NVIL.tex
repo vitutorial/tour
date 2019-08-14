@@ -144,7 +144,7 @@ $\lambda = \{E, M, c\}$
 
 Parameter estimation
 \begin{equation*}
-\argmax_{\theta,\lambda} ~ \E[q(z|x,\lambda)]{\log p(x|z,\theta)} - \KL{q(z|x,\lambda)}{p(z)}
+\argmax_{\textcolor{blue}{\theta,\lambda}} ~ \E[q(z|x,\lambda)]{\log p(x|z,\theta)} - \KL{q(z|x,\lambda)}{p(z)}
 \end{equation*}
 
 
@@ -191,7 +191,7 @@ The first term again requires approximation by sampling,  but there is a problem
 \begin{frame}{Inference Network Gradient}
 \begin{equation*}
 \begin{aligned}
-&\pdv{\lambda}\E[q_\lambda(z|x)]{\log p_\theta(x|z)} \\ \pause
+&\pdv{\alert{\lambda}}\E[q_{\alert{\lambda}}(z|x)]{\log p_\theta(x|z)} \\ \pause
 &= \pdv{\lambda} \sum_z q(z|x,\lambda)\log p(x|z, \theta)  \\ \pause
 &=  \underbrace{\sum_z \alert{\pdv{\lambda}(q(z|x, \lambda))} \log p(x|z, \theta)}_{\text{not an expectation}} 
 \end{aligned}
@@ -418,7 +418,7 @@ we have
 \end{equation*}
 
 \pause
-$b$ is known as \emph{baseline} \citep{Williams:1992}.
+$b$ is known as \emph{baseline} in RL literature.
 \end{frame}
 
 \begin{frame}{Examples of baselines}
