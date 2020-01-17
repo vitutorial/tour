@@ -1,45 +1,105 @@
+\frame{\tableofcontents}
+
+\section{Probabilistic Models}
 
 
+\begin{frame}{What is a probabilistic model?}
+
+	A probabilistic model predicts possible outcomes of an experiment. 
+	
+	~
+	
+	Most modern machine learning models are probabilistic.	
+
+\end{frame}
+
+\begin{frame}{Two Machine Learning Paradigms}
+
+	Supervised problems: \alert{learn a distribution over observed data}
+	\begin{itemize}
+		\item sentences in natural language, images, videos, $\ldots$
+	\end{itemize}
+	
+	~
+	
+	Unsupervised problems: \alert{learn a distribution over observed and unobserved data}
+	\begin{itemize}
+		\item sentences in natural language + parse trees, images + bounding boxes, $\ldots$
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{What are the benefits of probabilistic models?}
+
+	Probabilistic models allows to incorporate assumptions through
+	\begin{itemize}
+		\item the choice of distribution
+		\item the way that distributions uses side information
+		\item stipulate unobserved data and their properties
+	\end{itemize}
+	
+	~
+	
+	They return a distribution over outcomes	
+	
+\end{frame}
+
+\begin{frame}{Other benefits}
+
+	\begin{itemize}
+		\item They can generate data
+		\item They allow to model unobserved data
+		\item They can be more compact
+		\item They can provide explanation and can suggest improvements
+		\item They can inform decision makers
+	\end{itemize}
+	
+\end{frame}
+
+
+
+\begin{frame}{Deep Generative Models}
+
+	Naturally, one would like to combine the advantages of probabilistic models and neural networks. So why not have a neural net with latent variables?
+	
+	~ \pause
+	
+	Short answer: \emph{backpropagation breaks!}
+\end{frame}
 
 \begin{frame}{Why are we here today?}
 
-Because NN models work \\ \pause
-~ but they may struggle with
-\begin{itemize}
-	\item lack of supervision
-	\item partial supervision
-	\item lack of inductive bias
-\end{itemize}
-\pause
-
-In such cases, we usually turn to probabilistic models \\ \pause
-~ but it turns out NNs and PGMs do not go along
-\begin{itemize}
-	\item well... \pause that's no longer true!
-\end{itemize}
-
+	Because we want to combine the advantages of probabilistic models and neural networks to potentially 
+	\begin{itemize}
+		\item overcome lack of supervision
+		\item learn from partial supervision
+		\item learn from less data
+		\item shape the way models reason about data
+	\end{itemize}
+	and much more!
+	
 \end{frame}
 
 \begin{frame}{What are you getting out of this today?}
 
-As we progress we will
-\begin{itemize}
-	\item develop a shared vocabulary to talk about generative models powered by NNs
-	\item derive crucial results step by step
-\end{itemize}
+	As we progress we will
+	\begin{itemize}
+		\item develop a shared vocabulary to talk about generative models powered by NNs
+		\item derive crucial results step by step
+		\item connect concepts and implementation
+	\end{itemize}
 
-\pause
+	\pause
 
-Goal
-\begin{itemize}
-	\item you should be able to navigate through fresh literature
-	\item and start combining probabilistic models and NNs
-\end{itemize}
+	Goal
+	\begin{itemize}
+		\item you should be able to navigate through fresh literature
+		\item and start combining probabilistic models and NNs
+	\end{itemize}
 
 \end{frame}
 
-
-
+\section{Supervised Models Powered by NNs}
+\frame{\tableofcontents[currentsection]}
 
 \begin{frame}{Supervised problems}
 
@@ -346,11 +406,12 @@ where $x^{(s_1:s_M)}$ is a random mini-batch of size $M$
 \end{frame}
 
 
-
+\section{Latent Variable Models Powered by NNs}
+\frame{\tableofcontents[currentsection]}
 
 \begin{frame}{When do we have intractable likelihood?}
 
-{\bf Unsupervised problems} contain unobserved random variables\\ 
+{\bf Latent variable models} contain unobserved random variables\\ 
 \begin{equation*}
 p(x, z|\theta)
 \end{equation*}
