@@ -1,3 +1,12 @@
+\begin{frame}{This tutorial is about}
+
+	{\bf probabilistic} models \emph{parameterised} by {\bf neural networks}
+	\begin{itemize}
+		\item in this class we will look into what this means, why this is interesting, and when this is challenging
+	\end{itemize}
+	
+\end{frame}
+
 \frame{\tableofcontents}
 
 \section{Probabilistic Models}
@@ -83,7 +92,7 @@
 
 	As we progress we will
 	\begin{itemize}
-		\item develop a shared vocabulary to talk about generative models powered by NNs
+		\item develop a shared vocabulary to talk about probabilistic models powered by NNs
 		\item derive crucial results step by step
 		\item connect concepts and implementation
 	\end{itemize}
@@ -217,7 +226,7 @@ Entailment  & \textcolor{gray}{a text and hypothesis} & \textcolor{black}{entail
 
 \begin{frame}{Task-driven feature extraction}
 
-Often our side information is itself some high dimensional data
+Often our side information is itself some high dimensional object
 \begin{itemize}
 	\item $y$ is a sentence and $x$ a tree
 	\item $y$ is the source sentence and $x$ is the target
@@ -239,7 +248,7 @@ and part of the job of the NNs that parametrise our models is to also \alert{det
 From a statistical point of view, NNs do not generate data\\
 \begin{itemize}
 	\item \alert{they parametrise distributions} that \\
-	\emph{by assumption} govern data
+	\emph{by assumption} generate data
 	\item compact and efficient way to \alert{map from complex side information to parameter space}
 \end{itemize}
 
@@ -500,6 +509,19 @@ Continuous latent variable, discrete observation
 
 
 
+\end{frame}
+
+\begin{frame}{Approximations}
+	Can we approximate the gradient?
+	
+	\begin{itemize}
+		\item some approximations introduce bias
+		\item others break differentiability		
+		\item some approximations suffer from both problems
+	\end{itemize}
+	
+	We prefer unbiased approximations. A large bulk of DGM research goes to efficient unbiased gradient estimation.
+	
 \end{frame}
 
 \begin{frame}{Gradient estimates?}
