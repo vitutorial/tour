@@ -1,15 +1,14 @@
-
-\begin{frame}{Wake-sleep Algorithm}
+\begin{frame}{Wake-Sleep Algorithm}
 \begin{itemize}
-\item Generalise latent variables to Neural Networks
-\item Train generative neural model
+\item Generalise latent variables to neural networks.
+\item Train generative neural model.
 \item Use variational inference! (kind of)
+\item \citet{HintonEtAl:1995}
 \end{itemize}
 \end{frame}
 
-
-\begin{frame}{Wake-sleep Architecture}
-2 Neural Networks:
+\begin{frame}{Wake-Sleep Architecture}
+2 neural networks:
 \begin{itemize}
 \pause
 \item A generation network to model the data (the one we want to optimise) -- parameters: $ \theta $
@@ -87,44 +86,7 @@
 \end{frame}
 
 
-
-\begin{frame}{Wake Phase Objective}
-Objective  %
-
-\vspace{-15pt}
-
-\begin{equation*}
-\begin{aligned}
-%&\argmin_{\theta} \E[p(x)]{\KL{q(z|x, \lambda)}{\alert{p(z|x, \theta)}}} \\ \pause
-&\argmax_{\theta}~ \E[p(x)]{\ELBO(\theta, \lambda|x)} \\
-&=\argmax_{\theta}~ \E[p(x)]{\mathbb E_{q(z|x, \lambda)}\left[ \log p(z, x| \theta) \right] + \mathbb H[q(z|x, \lambda)] } \pause
-\end{aligned}
-\end{equation*}
-\vspace{-2pt}
-Gradient wrt $\theta$ for $x \sim p(x)$
-\begin{equation*}
-\begin{aligned}
-& \textcolor{blue}{\grad_\theta}  \mathbb E_{q(z|x, {\lambda})}\left[ \log p(z, x| \textcolor{blue}{\theta}) \right] + \textcolor{blue}{\grad_\theta} \mathbb H[q(z|x, {\lambda})] \\ \pause 
-&=\mathbb E_{q(z|x, {\lambda})}\left[ \textcolor{blue}{\grad_\theta} \log p(z, x| \textcolor{blue}{\theta}) \right] \\ \pause
-&\overset{\text{MC}}{\approx} \textcolor{blue}{\grad_\theta} \log p(z, x| \textcolor{blue}{\theta}) \quad \textcolor{gray}{\text{where } z \sim q(z|x, \lambda)}
-\end{aligned}
-\end{equation*} 
- 
-\end{frame}
-
-\begin{frame}{Wake Phase Objective}
-
-Assumes  $ z $ to be fixed random draw from $ q(z|x,\lambda) $ \\
-~ and maximises $\log p(z, x|\theta)$.
-
-~
-
-
-This is simply supervised learning with imputed latent data!
-
-\end{frame}
-
-
+% <<<< 
 \begin{frame}{Wake Phase Sampling}
 Sampling $z \sim q(z|x, \lambda)$
 \only<1>{
@@ -211,7 +173,6 @@ Sampling $z \sim q(z|x, \lambda)$
 \end{frame}
 
 
-
 \begin{frame}{Wake Phase Update}
 \hfill Compute $\log p(x,z|\theta)$ and update $\theta$
 \begin{figure}
@@ -236,74 +197,6 @@ Sampling $z \sim q(z|x, \lambda)$
 \end{figure}
 \end{frame}
 
-
-\begin{frame}{Sleep Phase Objective}
-Objective  %
-
-\vspace{-15pt}
-
-\begin{equation*}
-\begin{aligned}
-%&\argmin_{\theta} \E[p(x)]{\KL{q(z|x, \lambda)}{\alert{p(z|x, \theta)}}} \\ \pause
-&\argmax_{\lambda}~ \E[p(x)]{\ELBO(\theta, \lambda|x)} \\
-&=\argmax_{\lambda}~ \E[p(x)]{\mathbb E_{q(z|x, \lambda)}\left[ \log p(z, x| \theta) \right] + \mathbb H[q(z|x, \lambda)] } \pause
-\end{aligned}
-\end{equation*}
-
-Gradient wrt $\lambda$ for $x \sim p(x)$
-
-\vspace{-10pt}
-\begin{equation*}
-\begin{aligned}
-&\alert{\grad_\lambda} \mathbb E_{q(z|x, \alert{\lambda})}\left[ \log p(z, x| \theta) \right] + \alert{\grad_\lambda} \alert{\mathbb H[q(z|x, \lambda)]} 
-\end{aligned}
-\end{equation*} 
-
-\pause
-
-\alert{Let's change the objective!}
-
-\end{frame}
-
-
-\begin{frame}{Sleep Phase (Convenient) Objective}
-Flip the direction of the KL
-\begin{small}
-\begin{equation*}
-\begin{aligned}
-&\argmin_{\lambda} \mathbb E_{p(x)}\left[ \KL{\alert{p(z|x, \theta)}}{q(z|x, \lambda)} \right] \\ \pause
-&= \argmin_{\lambda} \mathbb E_{p(x)}\mathbb E_{p(z|x, \theta)}\left[ \log p(z|x, \theta) - \log q(z|x, \lambda) \right] \\ \pause
-&= \argmax_{\lambda} \mathbb E_{p(x, z|\theta)}\left[ \log q(z|x, \lambda) \right] - \underbrace{\mathbb E_{p(x,z|\theta)}\left[ \log p(z|x, \theta) \right]}_{\text{constant}}  \pause
-%&\overset{\text{MC}}{\approx} \argmax_{\lambda} \log q(z|\tilde{x}, \lambda) 
-\end{aligned}
-\end{equation*}
-\end{small}
-\vspace{-3pt}
-Gradient wrt $\lambda$
-\vspace{-2pt}
-\begin{equation*}
-\begin{aligned}
-&\textcolor{blue}{\grad_\lambda} \mathbb E_{p(x, z|\theta)}\left[ \log q(z|x, \textcolor{blue}{\lambda}) \right] \\ \pause
-&=  \mathbb E_{p(x, z|\theta)}\left[ \textcolor{blue}{\grad_\lambda}  \log q(z|x, \textcolor{blue}{\lambda}) \right]  \\ \pause
-%&=  \mathbb E_{\textcolor{darkcyan}{p(z|\theta)p(x|z, \theta)}}\left[ \textcolor{blue}{\grad_\lambda}  \log q(z|x, \textcolor{blue}{\lambda}) \right]  
-&\overset{\text{MC}}{\approx}  \textcolor{blue}{\grad_\lambda} \log q(z|\tilde{x}, \textcolor{blue}{\lambda} ) \quad \textcolor{gray}{\text{where } z \sim p(z|\theta)}\\
-&\phantom{\overset{\text{MC}}{\approx}  \textcolor{blue}{\grad_\lambda} \log q(z|\tilde{x}, \textcolor{blue}{\lambda} ) \quad \text{where }} \textcolor{gray}{~\tilde x \sim p(x|z,\theta)}
-\end{aligned}
-\end{equation*}
-%where $ z \sim p(z)$ and $\tilde{x} \sim p(x|z)$ \hfill \alert{(fake data!)}
-\end{frame}
-
-\begin{frame}{Sleep Phase (Convenient) Objective}
-
-
-Assumes \alert{fake data} $ \tilde{x} $ and latent variables $ z $ to be fixed random draws from $ p(x,z|\theta) $ via
-\begin{align*}
-z &\sim p(z|\theta) \\
-\tilde{x} &\sim p(x|z, \theta)
-\end{align*}
-and maximises $\log q(z|\tilde x, \lambda)$.
-
-\end{frame}
 
 \begin{frame}[t]{Sleep Phase Sampling}
 Sampling $(z, \tilde x) \sim p(x,z|\theta)$
@@ -373,6 +266,131 @@ Sampling $(z, \tilde x) \sim p(x,z|\theta)$
 \draw[->, thick] (z2) -- (z3) node[midway, above, rotate=315] {$ \lambda $};
 \end{tikzpicture}
 \end{figure}
+\end{frame}
+
+
+\begin{frame}{Wake Phase Objective}
+Objective  %
+%%
+\vspace{-15pt}
+
+\begin{equation*}
+\begin{aligned}
+&\argmin_{\theta}~ \E[p(x)]{\KL{q(z|x, \lambda)}{p(z|x, \theta)}}\\ \pause
+= &\argmax_{\theta} \E[p(x)]{\ELBO(\theta, \lambda | x) - \alert{\log p(x|\theta)}} \\ \pause
+% = &\argmin_{\theta}~ \E[p(x)]{\E[q(z|x, \lambda)]{\log q(z|x, \lambda) - \log \frac{p(x, z|\theta)}{p(x|\theta)}}} \\[5pt] \pause
+% \approx &\argmin _{\theta}~ \E[p(x)]{\E[q(z|x, \lambda)]{\log q(z|x, \lambda) - \log p(x, z|\theta)}} \\[5pt] \pause
+% \approx &\argmax_{\theta}~ \E[p(x)]{\ELBO(\theta, \lambda|x)} \\
+\end{aligned}
+\end{equation*} 
+
+Approximation: optimize the lower-bound alone.
+
+\end{frame}
+
+
+\begin{frame}{Wake Phase Objective}
+Objective  %
+
+\vspace{-15pt}
+
+\begin{equation*}
+\begin{aligned}
+%&\argmin_{\theta} \E[p(x)]{\KL{q(z|x, \lambda)}{\alert{p(z|x, \theta)}}} \\ \pause
+&\argmax_{\theta}~ \E[p(x)]{\ELBO(\theta, \lambda|x)} \\
+&=\argmax_{\theta}~ \E[p(x)]{\mathbb E_{q(z|x, \lambda)}\left[ \log p(z, x| \theta) \right] + \mathbb H[q(z|x, \lambda)] } \pause
+\end{aligned}
+\end{equation*}
+\vspace{-2pt}
+Gradient wrt $\theta$ for $x \sim p(x)$
+\begin{equation*}
+\begin{aligned}
+& \textcolor{blue}{\grad_\theta}  \mathbb E_{q(z|x, {\lambda})}\left[ \log p(z, x| \textcolor{blue}{\theta}) \right] + \textcolor{blue}{\grad_\theta} \mathbb H[q(z|x, {\lambda})] \\ \pause 
+&=\mathbb E_{q(z|x, {\lambda})}\left[ \textcolor{blue}{\grad_\theta} \log p(z, x| \textcolor{blue}{\theta}) \right] \\ \pause
+&\overset{\text{MC}}{\approx} \textcolor{blue}{\grad_\theta} \log p(z, x| \textcolor{blue}{\theta}) \quad \textcolor{gray}{\text{where } z \sim q(z|x, \lambda)}
+\end{aligned}
+\end{equation*} 
+ 
+\end{frame}
+
+\begin{frame}{Wake Phase Objective}
+
+Assumes  $ z $ to be fixed random draw from $ q(z|x,\lambda) $ \\
+~ and maximises $\log p(z, x|\theta)$.
+
+~
+
+
+This is simply supervised learning with imputed latent data!
+
+\end{frame}
+
+
+\begin{frame}{Sleep Phase Objective}
+Objective  %
+
+\vspace{-15pt}
+
+\begin{equation*}
+\begin{aligned}
+%&\argmin_{\theta} \E[p(x)]{\KL{q(z|x, \lambda)}{\alert{p(z|x, \theta)}}} \\ \pause
+&\argmax_{\lambda}~ \E[p(x)]{\ELBO(\theta, \lambda|x)} \\
+&=\argmax_{\lambda}~ \E[p(x)]{\mathbb E_{q(z|x, \lambda)}\left[ \log p(z, x| \theta) \right] + \mathbb H[q(z|x, \lambda)] } \pause
+\end{aligned}
+\end{equation*}
+
+Gradient wrt $\lambda$ for $x \sim p(x)$
+
+\vspace{-10pt}
+\begin{equation*}
+\begin{aligned}
+&\alert{\grad_\lambda} \mathbb E_{q(z|x, \alert{\lambda})}\left[ \log p(z, x| \theta) \right] + \alert{\grad_\lambda} \alert{\mathbb H[q(z|x, \lambda)]} 
+\end{aligned}
+\end{equation*} 
+
+\pause
+
+\alert{Let's change the objective!}
+
+\end{frame}
+
+
+\begin{frame}{Sleep Phase (Convenient) Objective}
+Flip the direction of the KL
+\begin{small}
+\begin{equation*}
+\begin{aligned}
+&\argmin_{\lambda} \mathbb E_{p(x)}\left[ \KL{\alert{p(z|x, \theta)}}{q(z|x, \lambda)} \right] \\ \pause
+&= \argmin_{\lambda} \mathbb E_{p(x)}\mathbb E_{p(z|x, \theta)}\left[ \log p(z|x, \theta) - \log q(z|x, \lambda) \right] \\ \pause
+&= \argmax_{\lambda} \mathbb E_{p(x, z|\theta)}\left[ \log q(z|x, \lambda) \right] - \underbrace{\mathbb E_{p(x,z|\theta)}\left[ \log p(z|x, \theta) \right]}_{\text{constant}}  \pause
+%&\overset{\text{MC}}{\approx} \argmax_{\lambda} \log q(z|\tilde{x}, \lambda) 
+\end{aligned}
+\end{equation*}
+\end{small}
+\vspace{-3pt}
+Gradient wrt $\lambda$
+\vspace{-2pt}
+\begin{equation*}
+\begin{aligned}
+&\textcolor{blue}{\grad_\lambda} \mathbb E_{p(x, z|\theta)}\left[ \log q(z|x, \textcolor{blue}{\lambda}) \right] \\ \pause
+&=  \mathbb E_{p(x, z|\theta)}\left[ \textcolor{blue}{\grad_\lambda}  \log q(z|x, \textcolor{blue}{\lambda}) \right]  \\ \pause
+%&=  \mathbb E_{\textcolor{darkcyan}{p(z|\theta)p(x|z, \theta)}}\left[ \textcolor{blue}{\grad_\lambda}  \log q(z|x, \textcolor{blue}{\lambda}) \right]  
+&\overset{\text{MC}}{\approx}  \textcolor{blue}{\grad_\lambda} \log q(z|\tilde{x}, \textcolor{blue}{\lambda} ) \quad \textcolor{gray}{\text{where } z \sim p(z|\theta)}\\
+&\phantom{\overset{\text{MC}}{\approx}  \textcolor{blue}{\grad_\lambda} \log q(z|\tilde{x}, \textcolor{blue}{\lambda} ) \quad \text{where }} \textcolor{gray}{~\tilde x \sim p(x|z,\theta)}
+\end{aligned}
+\end{equation*}
+%where $ z \sim p(z)$ and $\tilde{x} \sim p(x|z)$ \hfill \alert{(fake data!)}
+\end{frame}
+
+\begin{frame}{Sleep Phase (Convenient) Objective}
+
+Assumes \alert{fake data} $ \tilde{x} $ and latent variables $ z $ to be fixed random draws from $ p(x,z|\theta) $ via
+\begin{align*}
+z &\sim p(z|\theta) \\
+\tilde{x} &\sim p(x|z, \theta)
+\end{align*}
+and maximises $\log q(z|\tilde x, \lambda)$.
+
 \end{frame}
 
 \begin{frame}{Wake-sleep Algorithm}
