@@ -184,7 +184,7 @@ KL between $K$ independent Bernoulli distributions is tractable
 \end{aligned}
 \end{equation*}
 \pause
-The first term again requires approximation by sampling,  but there is a problem
+The first term again requires approximation by sampling,  but there is a problem -- TODO don't like this sentence
 
 \end{frame}
 
@@ -207,9 +207,9 @@ The first term again requires approximation by sampling,  but there is a problem
 \end{frame}
 
 
-\section{Score function estimator}
+\section{Score Function Estimator}
 
-\begin{frame}{Score function estimator}
+\begin{frame}{Score Function Estimator}
 
 We can again use the log identity for derivatives
 \vspace{-5pt}
@@ -226,11 +226,9 @@ We can again use the log identity for derivatives
 
 \end{frame}
 
-\begin{frame}{Score function estimator: remarks}
-
+\begin{frame}{Score Function Estimator}
 
 We can now build an MC estimator
-\begin{small}
 \begin{equation*}
 \begin{aligned}
 &\pdv{\lambda}\E[q(z|x,\lambda)]{\log p(x|z,\theta)} \\ 
@@ -239,13 +237,6 @@ We can now build an MC estimator
 &\textcolor{gray}{\text{where } z^{(s)} \sim q(z|x, \lambda)}
 \end{aligned}
 \end{equation*}
-\end{small}
-
-\pause
-\begin{itemize}
-	\item magnitude of $\log p(x|z, \theta)$ varies widely \pause 
-	\item model likelihood does not contribute to direction of gradient 
-\end{itemize}
 \end{frame}
 
 
@@ -268,13 +259,14 @@ We can now build an MC estimator
 
 % sample latent variable
 \node[above right= of input] (stub) {};
-\node[circle, draw, thick, above right= of stub] (z) {$ z $};
+\node[above right= of stub](secondstub) {};
+\node[circle, draw, thick, above right= of secondstub] (z) {$ z $};
 \node[right = of z, xshift=-1cm] (random) {$ \sim \BerDist{b} $};
 
 \pause
 
 % log p(x|z)
-\node[rectangle, fill=blue!20, thick, above right= of input, rounded corners, draw] (loss) {$ x $};
+\node[rectangle, fill=blue!20, thick, above right= of input, rounded corners, draw] (loss) {$ \log p(x|z) $};
 % x -> log p(x|z)
 \draw[->, thick] (input) -- (loss) node[midway, above, rotate=225] {$ \theta $};
 % plate for gen net
@@ -295,7 +287,7 @@ We can now build an MC estimator
 
 \pause
 \node[rectangle, fill=blue!20, thick, above of= psi, rounded corners, draw, node distance=2cm] (scorefunction) {$ \log q(z|b) \uncover<5->{\alert{\log p(x|z)}} $};
-\node[rectangle, fill=blue!20, thick, above right= of input, rounded corners, draw] (loss) {$ x $};
+\node[rectangle, fill=blue!20, thick, above right= of input, rounded corners, draw] (loss) {$ \log p(x|z) $};
 \draw[->, thick] (psi) edge (scorefunction);
 \draw[->, thick] (z) edge (scorefunction);
 \uncover<5->{\draw[->, thick] (loss) edge node[strike out,draw,-,red,double]{} (scorefunction);}
@@ -304,148 +296,213 @@ We can now build an MC estimator
 \end{figure}
 \end{frame}
 
-\begin{frame}{Pros and Cons}
+% \section{Variance reduction}
+% \frame{\tableofcontents[currentsection]}
+
+\begin{frame}{Score Function Estimator: Variance}
+\begin{small}
+\begin{equation*}
+\begin{aligned}
+&\pdv{\lambda}\E[q(z|x,\lambda)]{\log p(x|z,\theta)}
+= \mathbb E_{q(z|x,\lambda)} \left[  \log p(x|z,\theta)  \pdv{\lambda}\log q(z|x,\lambda)\right]
+\end{aligned}
+\end{equation*}
+\end{small}
+
+\pause
+
+Empirically this estimator often exhibits high variance.
+
+~
+
+\pause 
+
 \begin{itemize}
-\item Pros
+	\item the magnitude of $\log p(x|z, \theta)$ varies widely \pause 
+	\item the model likelihood does not contribute to direction of gradient 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Score Function Estimator: Variance}
+
+We could:
+
+\pause
+
+\begin{itemize}
+	\item sample more (better MC estimates) \\ \pause
+	\item use variance reduction techniques (e.g. baselines and control variates)\\ 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Score Function Estimator: Variance}
+Idea: standardize the "reward" $\log p(x|z, \theta)$ to have a mean at 0 and a variance of 1 \pause
+
+~ 
+
+\begin{itemize}
+  \setlength\itemsep{0.7em}
+    \item Keep a moving average of the mean and variance $\log p(x|z, \theta)$: $\hat{\mu}$ and $\hat{\sigma^2}$. \pause
+    \item $\hat{r} = \frac{\log p(x|z, \theta)-\hat{mu}}{\hat{\sigma^2}}$
+\end{itemize}
+
+\pause
+
+\begin{small}
+\begin{equation*}
+\begin{aligned}
+\pdv{\lambda}\E[q(z|x,\lambda)]{\log p(x|z,\theta)}
+&= \mathbb E_{q(z|x,\lambda)} \left[  \log p(x|z,\theta)  \pdv{\lambda}\log q(z|x,\lambda)\right]\\ \pause
+&\approx E_{q(z|x,\lambda)} \left[  \hat{r} \pdv{\lambda}\log q(z|x,\lambda)\right]
+\end{aligned}
+\end{equation*}
+\end{small}
+
+\end{frame}
+
+\begin{frame}{Score Function Estimator: Variance}
+
+\begin{itemize}
+    \item We can that using these \emph{baselines} do not bias the estimator. \pause
+    \item We can add more advanced \emph{control variates} and other \emph{baselines} to further reduce variance. \pause
+    \item More about this tomorrow!
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Pros and Cons}
+Pros:
 \begin{itemize}
 \item Applicable to all distributions
 \item Many libraries come with samplers for common distributions
 \end{itemize}
 \pause
-\item Cons
-\begin{itemize}
-\item High Variance!
-\end{itemize}
-\end{itemize}
-\end{frame}
-
-\section{Variance reduction}
-\frame{\tableofcontents[currentsection]}
-
-\begin{frame}{When variance is high we can}
-
-\pause
-
-\begin{itemize}
-	\item sample more \\ \pause
-	\item use variance reduction techniques (e.g. baselines and control variates)\\ 
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Control variates}
-
-\begin{alertblock}{Intuition}
-To estimate $\mathbb E[f(z)]$ via Monte Carlo we compute the empirical average of $\hat f(z)$ where $\hat f(z)$ is chosen so that $\mathbb E[\hat f(z)] = \mathbb E[f(z)]$ and $\Var(f) > \Var(\hat f)$.
-\end{alertblock}
-
-\end{frame}
-
-
-
-\begin{frame}{Equivalent expectations}
-
-Let $\bar f = \mathbb E[f(z)]$ be an expectation of interest \pause
-\begin{itemize}
-	\item say we know $\bar c = \mathbb E[c(z)]$ \pause
-	\item then for $\hat f(z) \triangleq f(z) - b(c(z) - \mathbb E[c(z)])$ \\ \pause
-	it holds that $\mathbb E[\hat f(z)] = \mathbb E[f(z)]$ \pause
-	\item and $\Var(\hat f) = \Var(f) - 2b \Cov(f, c) + b^2 \Var(c)$ 
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}{Choosing the control variate}
-
-\begin{enumerate}
-	\item $\hat f(z) \triangleq f(z) - b(c(z) - \mathbb E[c(z)])$ 
-	\item $\Var(\hat f) = \Var(f) - 2b \Cov(f, c) + b^2 \Var(c)$ 
-\end{enumerate}
-
-How do we choose $b$ and $c(z)$? \pause
-\begin{itemize}
-	\item If $f(z)$ and $c(z)$ are positively correlated, then we may reduce variance \pause
-	\item solving $\pdv{b}\Var(\hat f) = 0$ \pause yields $b^\star = \sfrac{\Cov(f,c)}{\Var(c)}$
-\end{itemize}
-
-\pause
-
-Of course, $\mathbb E[c(z)]$ must be known!
-
-\end{frame}
-
-\begin{frame}{MC}
-We then use the estimate
-\begin{equation*}
-\bar f \overset{\text{MC}}{\approx} \frac{1}{S} \left( \sum_{s=1}^S f(z^{(s)}) - b c(z^{(s)})\right) + b \bar c
-\end{equation*}
-\pause
-
-And recall that for us 
-\begin{equation*}
-f(z) = \log p(x|z, \theta) \pdv{\lambda} \log q(z|x, \lambda)
-\end{equation*}
-and $z^{(s)} \sim q(z|x, \lambda)$
-\end{frame}
-
-
-\begin{frame}{Expected score}
-
-The Expectation of the score function is 0. 
-\begin{equation*}
-\begin{aligned}
-&\E[q(z|x,\lambda)]{\pdv{\lambda} \log q(z|x,\lambda)} \\ \pause
-&= \int q(z|x, \lambda) \pdv{\lambda} \log q(z|x, \lambda) \dd z\\ \pause
-&= \int  \pdv{\lambda} q(z|x, \lambda) \dd z \\ \pause
-&= \pdv{\lambda} \int q(z|x, \lambda) \dd z \\ \pause
-&= \pdv{\lambda} 1 = \textcolor{blue}{0} 
-\end{aligned}
-\end{equation*}
-
-\end{frame}
-
-\begin{frame}{Baselines}
-With
-\begin{equation*}
-f(z) = \log p(x|z, \theta) \pdv{\lambda} \log q(z|x, \lambda)
-\end{equation*}
-and 
-\begin{equation*}
-c(z) = \pdv{\lambda} \log q(z|x, \lambda)
-\end{equation*}
-we have 
-\begin{equation*}
-\hat f(z) = \pause (\log p(x|z, \theta) - b) \pdv{\lambda} \log q(z|x, \lambda) 
-\end{equation*}
-
-\pause
-$b$ is known as \emph{baseline} in RL literature.
-\end{frame}
-
-\begin{frame}{Examples of baselines}
-
-\begin{itemize}
-	\item Moving average of $\log p(x|z, \theta)$ \\
-	 based on previous batches \pause
-	\item A trainable constant $b$ \pause
-	\item A neural network prediction based on $x$\\
-	e.g. $b(x; \omega)$ \pause
-	\item The likelihood assessed at a deterministic point, e.g. \\
-	$b(x) = \log p(x|z^\star, \theta)$ where $z^\star = \argmax_z q(z|x, \lambda)$
-\end{itemize}
-\end{frame}
-
-
-\begin{frame}{Trainable baselines}
-Baselines are predicted by a regression model (e.g. a neural net). \\
 
 ~
 
-The model is trained using 
-an $ L_{2} $-loss.
-\begin{equation*}
-\min_\omega \left(b(x; \omega) - \log p(x|z,\theta)\right)^{2}
-\end{equation*}
+Cons:
+\begin{itemize}
+\item High Variance!
+\end{itemize}
 \end{frame}
+
+
+
+% \begin{frame}{Control variates}
+
+% \begin{alertblock}{Intuition}
+% To estimate $\mathbb E[f(z)]$ via Monte Carlo we compute the empirical average of $\hat f(z)$ where $\hat f(z)$ is chosen so that $\mathbb E[\hat f(z)] = \mathbb E[f(z)]$ and $\Var(f) > \Var(\hat f)$.
+% \end{alertblock}
+
+% \end{frame}
+
+
+
+% \begin{frame}{Equivalent expectations}
+
+% Let $\bar f = \mathbb E[f(z)]$ be an expectation of interest \pause
+% \begin{itemize}
+% 	\item say we know $\bar c = \mathbb E[c(z)]$ \pause
+% 	\item then for $\hat f(z) \triangleq f(z) - b(c(z) - \mathbb E[c(z)])$ \\ \pause
+% 	it holds that $\mathbb E[\hat f(z)] = \mathbb E[f(z)]$ \pause
+% 	\item and $\Var(\hat f) = \Var(f) - 2b \Cov(f, c) + b^2 \Var(c)$ 
+% \end{itemize}
+
+% \end{frame}
+
+% \begin{frame}{Choosing the control variate}
+
+% \begin{enumerate}
+% 	\item $\hat f(z) \triangleq f(z) - b(c(z) - \mathbb E[c(z)])$ 
+% 	\item $\Var(\hat f) = \Var(f) - 2b \Cov(f, c) + b^2 \Var(c)$ 
+% \end{enumerate}
+
+% How do we choose $b$ and $c(z)$? \pause
+% \begin{itemize}
+% 	\item If $f(z)$ and $c(z)$ are positively correlated, then we may reduce variance \pause
+% 	\item solving $\pdv{b}\Var(\hat f) = 0$ \pause yields $b^\star = \sfrac{\Cov(f,c)}{\Var(c)}$
+% \end{itemize}
+
+% \pause
+
+% Of course, $\mathbb E[c(z)]$ must be known!
+
+% \end{frame}
+
+% \begin{frame}{MC}
+% We then use the estimate
+% \begin{equation*}
+% \bar f \overset{\text{MC}}{\approx} \frac{1}{S} \left( \sum_{s=1}^S f(z^{(s)}) - b c(z^{(s)})\right) + b \bar c
+% \end{equation*}
+% \pause
+
+% And recall that for us 
+% \begin{equation*}
+% f(z) = \log p(x|z, \theta) \pdv{\lambda} \log q(z|x, \lambda)
+% \end{equation*}
+% and $z^{(s)} \sim q(z|x, \lambda)$
+% \end{frame}
+
+
+% \begin{frame}{Expected score}
+
+% The Expectation of the score function is 0. 
+% \begin{equation*}
+% \begin{aligned}
+% &\E[q(z|x,\lambda)]{\pdv{\lambda} \log q(z|x,\lambda)} \\ \pause
+% &= \int q(z|x, \lambda) \pdv{\lambda} \log q(z|x, \lambda) \dd z\\ \pause
+% &= \int  \pdv{\lambda} q(z|x, \lambda) \dd z \\ \pause
+% &= \pdv{\lambda} \int q(z|x, \lambda) \dd z \\ \pause
+% &= \pdv{\lambda} 1 = \textcolor{blue}{0} 
+% \end{aligned}
+% \end{equation*}
+
+% \end{frame}
+
+% \begin{frame}{Baselines}
+% With
+% \begin{equation*}
+% f(z) = \log p(x|z, \theta) \pdv{\lambda} \log q(z|x, \lambda)
+% \end{equation*}
+% and 
+% \begin{equation*}
+% c(z) = \pdv{\lambda} \log q(z|x, \lambda)
+% \end{equation*}
+% we have 
+% \begin{equation*}
+% \hat f(z) = \pause (\log p(x|z, \theta) - b) \pdv{\lambda} \log q(z|x, \lambda) 
+% \end{equation*}
+
+% \pause
+% $b$ is known as \emph{baseline} in RL literature.
+% \end{frame}
+
+% \begin{frame}{Examples of baselines}
+
+% \begin{itemize}
+% 	\item Moving average of $\log p(x|z, \theta)$ \\
+% 	 based on previous batches \pause
+% 	\item A trainable constant $b$ \pause
+% 	\item A neural network prediction based on $x$\\
+% 	e.g. $b(x; \omega)$ \pause
+% 	\item The likelihood assessed at a deterministic point, e.g. \\
+% 	$b(x) = \log p(x|z^\star, \theta)$ where $z^\star = \argmax_z q(z|x, \lambda)$
+% \end{itemize}
+% \end{frame}
+
+
+% \begin{frame}{Trainable baselines}
+% Baselines are predicted by a regression model (e.g. a neural net). \\
+
+% ~
+
+% The model is trained using 
+% an $ L_{2} $-loss.
+% \begin{equation*}
+% \min_\omega \left(b(x; \omega) - \log p(x|z,\theta)\right)^{2}
+% \end{equation*}
+% \end{frame}
 
 
 

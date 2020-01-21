@@ -1,0 +1,159 @@
+\section{Variance reduction}
+
+\begin{frame}{When variance is high we can}
+
+\pause
+
+\begin{itemize}
+	\item sample more \\ \pause
+	\item use variance reduction techniques (e.g. baselines and control variates)\\ 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Control variates}
+
+\begin{alertblock}{Intuition}
+To estimate $\mathbb E[f(z)]$ via Monte Carlo we compute the empirical average of $\hat f(z)$ where $\hat f(z)$ is chosen so that $\mathbb E[\hat f(z)] = \mathbb E[f(z)]$ and $\Var(f) > \Var(\hat f)$.
+\end{alertblock}
+
+\end{frame}
+
+
+
+\begin{frame}{Equivalent expectations}
+
+Let $\bar f = \mathbb E[f(z)]$ be an expectation of interest \pause
+\begin{itemize}
+	\item say we know $\bar c = \mathbb E[c(z)]$ \pause
+	\item then for $\hat f(z) \triangleq f(z) - b(c(z) - \mathbb E[c(z)])$ \\ \pause
+	it holds that $\mathbb E[\hat f(z)] = \mathbb E[f(z)]$ \pause
+	\item and $\Var(\hat f) = \Var(f) - 2b \Cov(f, c) + b^2 \Var(c)$ 
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Choosing the control variate}
+
+\begin{enumerate}
+	\item $\hat f(z) \triangleq f(z) - b(c(z) - \mathbb E[c(z)])$ 
+	\item $\Var(\hat f) = \Var(f) - 2b \Cov(f, c) + b^2 \Var(c)$ 
+\end{enumerate}
+
+How do we choose $b$ and $c(z)$? \pause
+\begin{itemize}
+	\item If $f(z)$ and $c(z)$ are positively correlated, then we may reduce variance \pause
+	\item solving $\pdv{b}\Var(\hat f) = 0$ \pause yields $b^\star = \sfrac{\Cov(f,c)}{\Var(c)}$
+\end{itemize}
+
+\pause
+
+Of course, $\mathbb E[c(z)]$ must be known!
+
+\end{frame}
+
+\begin{frame}{MC}
+We then use the estimate
+\begin{equation*}
+\bar f \overset{\text{MC}}{\approx} \frac{1}{S} \left( \sum_{s=1}^S f(z^{(s)}) - b c(z^{(s)})\right) + b \bar c
+\end{equation*}
+\pause
+
+And recall that for us 
+\begin{equation*}
+f(z) = \log p(x|z, \theta) \pdv{\lambda} \log q(z|x, \lambda)
+\end{equation*}
+and $z^{(s)} \sim q(z|x, \lambda)$
+\end{frame}
+
+
+\begin{frame}{Expected score}
+
+The Expectation of the score function is 0. 
+\begin{equation*}
+\begin{aligned}
+&\E[q(z|x,\lambda)]{\pdv{\lambda} \log q(z|x,\lambda)} \\ \pause
+&= \int q(z|x, \lambda) \pdv{\lambda} \log q(z|x, \lambda) \dd z\\ \pause
+&= \int  \pdv{\lambda} q(z|x, \lambda) \dd z \\ \pause
+&= \pdv{\lambda} \int q(z|x, \lambda) \dd z \\ \pause
+&= \pdv{\lambda} 1 = \textcolor{blue}{0} 
+\end{aligned}
+\end{equation*}
+
+\end{frame}
+
+\begin{frame}{Baselines}
+With
+\begin{equation*}
+f(z) = \log p(x|z, \theta) \pdv{\lambda} \log q(z|x, \lambda)
+\end{equation*}
+and 
+\begin{equation*}
+c(z) = \pdv{\lambda} \log q(z|x, \lambda)
+\end{equation*}
+we have 
+\begin{equation*}
+\hat f(z) = \pause (\log p(x|z, \theta) - b) \pdv{\lambda} \log q(z|x, \lambda) 
+\end{equation*}
+
+\pause
+$b$ is known as \emph{baseline} in RL literature.
+\end{frame}
+
+\begin{frame}{Examples of baselines}
+
+\begin{itemize}
+	\item Moving average of $\log p(x|z, \theta)$ \\
+	 based on previous batches \pause
+	\item A trainable constant $b$ \pause
+	\item A neural network prediction based on $x$\\
+	e.g. $b(x; \omega)$ \pause
+	\item The likelihood assessed at a deterministic point, e.g. \\
+	$b(x) = \log p(x|z^\star, \theta)$ where $z^\star = \argmax_z q(z|x, \lambda)$
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Trainable baselines}
+Baselines are predicted by a regression model (e.g. a neural net). \\
+
+~
+
+The model is trained using 
+an $ L_{2} $-loss.
+\begin{equation*}
+\min_\omega \left(b(x; \omega) - \log p(x|z,\theta)\right)^{2}
+\end{equation*}
+\end{frame}
+
+
+
+
+\begin{frame}{Summary}
+\begin{itemize}
+\item Wake-Sleep: train inference and generation networks with separate objectives
+\pause
+\item NVIL: a single objective (ELBO) for both models\\ \pause
+\item Use score function estimator\\ 
+\pause
+\item Always use baselines for variance reduction!
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[allowframebreaks]{Literature}
+%\nocite{KingmaWelling:2013}
+\nocite{HintonEtAl:1995}
+\nocite{MnihNVIL}
+ \nocite{PaisleyEtAl:2012}
+ \nocite{RanganathEtAl:2014}
+ \nocite{Williams:1992}
+ \nocite{greensmith2004variance} 
+ \nocite{gu2015muprop}
+ \nocite{tucker2017rebar}
+ \nocite{grathwohl2017backpropagation}
+
+
+
+\bibliographystyle{unsrtnat}
+\bibliography{../../VI}
+\end{frame}
