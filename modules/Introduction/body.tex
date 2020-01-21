@@ -1,45 +1,116 @@
 
+\begin{frame}{This tutorial is about}
 
+	{\bf probabilistic} models \emph{parameterised} by {\bf neural networks}
+	\begin{itemize}
+		\item in this class we will look into what this means, why this is interesting, and when this is challenging
+	\end{itemize}
+	
+	
+\end{frame}
+
+\frame{\tableofcontents}
+
+\section{Probabilistic Models}
+
+
+\begin{frame}{What is a probabilistic model?}
+
+	A probabilistic model predicts possible outcomes of an experiment. 
+	
+	~
+	
+	Most modern machine learning models are probabilistic.	
+
+\end{frame}
+
+\begin{frame}{Two Machine Learning Paradigms}
+
+	Supervised problems: \alert{learn a distribution over observed data}
+	\begin{itemize}
+		\item sentences in natural language, images, videos, $\ldots$
+	\end{itemize}
+	
+	~
+	
+	Unsupervised problems: \alert{learn a distribution over observed and unobserved data}
+	\begin{itemize}
+		\item sentences in natural language + parse trees, images + bounding boxes, $\ldots$
+	\end{itemize}
+\end{frame}
+
+\begin{frame}{What are the benefits of probabilistic models?}
+
+	Probabilistic models allows to incorporate assumptions through
+	\begin{itemize}
+		\item the choice of distribution
+		\item the way that distributions uses side information
+		\item stipulate unobserved data and their properties
+	\end{itemize}
+	
+	~
+	
+	They return a distribution over outcomes	
+	
+\end{frame}
+
+\begin{frame}{Other benefits}
+
+	\begin{itemize}
+		\item They can generate data
+		\item They allow to model unobserved data
+		\item They can be more compact
+		\item They can provide explanation and can suggest improvements
+		\item They can inform decision makers
+	\end{itemize}
+	
+\end{frame}
+
+
+
+\begin{frame}{Deep Generative Models}
+
+	Naturally, one would like to combine the advantages of probabilistic models and neural networks. So why not have a neural net with latent variables?
+	
+	~ \pause
+	
+	Short answer: \emph{backpropagation breaks!}
+\end{frame}
 
 \begin{frame}{Why are we here today?}
 
-Because NN models work \\ \pause
-~ but they may struggle with
-\begin{itemize}
-	\item lack of supervision
-	\item partial supervision
-	\item lack of inductive bias
-\end{itemize}
-\pause
-
-In such cases, we usually turn to probabilistic models \\ \pause
-~ but it turns out NNs and PGMs do not go along
-\begin{itemize}
-	\item well... \pause that's no longer true!
-\end{itemize}
-
+	Because we want to combine the advantages of probabilistic models and neural networks to potentially 
+	\begin{itemize}
+		\item overcome lack of supervision
+		\item learn from partial supervision
+		\item learn from less data
+		\item shape the way models reason about data
+	\end{itemize}
+	and much more!
+	
 \end{frame}
 
 \begin{frame}{What are you getting out of this today?}
 
-As we progress we will
-\begin{itemize}
-	\item develop a shared vocabulary to talk about generative models powered by NNs
-	\item derive crucial results step by step
-\end{itemize}
+	As we progress we will
+	\begin{itemize}
+		\item develop a shared vocabulary to talk about probabilistic models powered by NNs
+		\item derive crucial results step by step
+		\item connect concepts and implementation
+	\end{itemize}
 
-\pause
+	\pause
 
-Goal
-\begin{itemize}
-	\item you should be able to navigate through fresh literature
-	\item and start combining probabilistic models and NNs
-\end{itemize}
+	Goal
+	\begin{itemize}
+		\item you should be able to navigate through fresh literature
+		\item and start combining probabilistic models and NNs
+	\end{itemize}
 
 \end{frame}
 
-
-
+\section{Supervised Models Powered by NNs}
+\frame{\tableofcontents[currentsection]}
 
 \begin{frame}{Supervised problems}
 
@@ -65,12 +136,12 @@ and \alert{estimate parameters $\theta$}  that assign maximum likelihood $p(x^{(
 Let $y$ be all side information available\\
 ~ e.g. deterministic \emph{inputs/features/predictors}
 
-~
+~ \pause
 
 Have neural networks predict parameters of our probabilistic model
 	\begin{align*}
     X|y \sim \Cat(\pi_{\alert \theta}(y)) & & \text{or} & & X|y \sim \mathcal N(\mu_{\alert \theta}(y), \sigma_{\alert \theta}(y)^2)
-    \end{align*}
+    \end{align*} \pause
 ~ and proceed to \alert{estimate parameters $\theta$}  of the NNs %via MLE % that assign maximum likelihood to observations
 
 
@@ -118,9 +189,6 @@ Deterministic variables
 \begin{frame}{Multiple problems, same language}
 
 
-
-\begin{small}
-
 \begin{columns}
 \begin{column}{0.3\textwidth}
 \scalebox{0.8}{
@@ -140,24 +208,27 @@ Deterministic variables
 
 \end{columns}
 
-\begin{tabular}{p{2cm} p{4cm} p{4cm}}
- & Side information ($y$) & Observation ($x$) \\
-Parsing &   \textcolor{gray}{a sentence} & \textcolor{black}{its syntactic/semantic parse tree/graph} \\
-&&\\
-Translation &  \textcolor{gray}{a sentence} & \textcolor{black}{its translation} \\
-&&\\
-Captioning &  \textcolor{gray}{an image} & \textcolor{black}{caption in English} \\
-&&\\
-Entailment  & \textcolor{gray}{a text and hypothesis} & \textcolor{black}{entailment relation}
+~
+
+\begin{center}
+\begin{tabular}{l l}
+ {\bf Side information} ($y$) & {\bf Observation} ($x$) \\
+ \textcolor{black}{a movie review} & \textcolor{black}{sentiment} \\
+  \textcolor{black}{a translation pair} & \textcolor{black}{quality score} \\
+  \textcolor{black}{a sentence} & \textcolor{black}{its syntactic parse} \\
+  \textcolor{black}{a sentence} & \textcolor{black}{its translation} \\
+  \textcolor{black}{an image} & \textcolor{black}{caption in English} 
 \end{tabular}
-\end{small}
+\end{center}
+%\begin{footnotesize}
+%\end{footnotesize}
 
 \end{frame}
 
 
 \begin{frame}{Task-driven feature extraction}
 
-Often our side information is itself some high dimensional data
+Often our side information is itself some high dimensional object
 \begin{itemize}
 	\item $y$ is a sentence and $x$ a tree
 	\item $y$ is the source sentence and $x$ is the target
@@ -179,7 +250,7 @@ and part of the job of the NNs that parametrise our models is to also \alert{det
 From a statistical point of view, NNs do not generate data\\
 \begin{itemize}
 	\item \alert{they parametrise distributions} that \\
-	\emph{by assumption} govern data
+	\emph{by assumption} generate data
 	\item compact and efficient way to \alert{map from complex side information to parameter space}
 \end{itemize}
 
@@ -346,11 +417,12 @@ where $x^{(s_1:s_M)}$ is a random mini-batch of size $M$
 \end{frame}
 
 
-
+\section{Latent Variable Models Powered by NNs}
+\frame{\tableofcontents[currentsection]}
 
 \begin{frame}{When do we have intractable likelihood?}
 
-{\bf Unsupervised problems} contain unobserved random variables\\ 
+{\bf Latent variable models} contain unobserved random variables\\ 
 \begin{equation*}
 p(x, z|\theta)
 \end{equation*}
@@ -439,6 +511,19 @@ Continuous latent variable, discrete observation
 
 
 
+\end{frame}
+
+\begin{frame}{Approximations}
+	Can we approximate the gradient?
+	
+	\begin{itemize}
+		\item some approximations introduce bias
+		\item others break differentiability		
+		\item some approximations suffer from both problems
+	\end{itemize}
+	
+	We prefer unbiased approximations. A large bulk of DGM research goes to efficient unbiased gradient estimation.
+	
 \end{frame}
 
 \begin{frame}{Gradient estimates?}
