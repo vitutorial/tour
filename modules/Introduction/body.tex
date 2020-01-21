@@ -136,12 +136,12 @@ and \alert{estimate parameters $\theta$}  that assign maximum likelihood $p(x^{(
 Let $y$ be all side information available\\
 ~ e.g. deterministic \emph{inputs/features/predictors}
 
-~
+~ \pause
 
 Have neural networks predict parameters of our probabilistic model
 	\begin{align*}
     X|y \sim \Cat(\pi_{\alert \theta}(y)) & & \text{or} & & X|y \sim \mathcal N(\mu_{\alert \theta}(y), \sigma_{\alert \theta}(y)^2)
-    \end{align*}
+    \end{align*} \pause
 ~ and proceed to \alert{estimate parameters $\theta$}  of the NNs %via MLE % that assign maximum likelihood to observations
 
 
@@ -189,9 +189,6 @@ Deterministic variables
 \begin{frame}{Multiple problems, same language}
 
 
-
-\begin{small}
-
 \begin{columns}
 \begin{column}{0.3\textwidth}
 \scalebox{0.8}{
@@ -211,17 +208,20 @@ Deterministic variables
 
 \end{columns}
 
-\begin{tabular}{p{2cm} p{4cm} p{4cm}}
- & Side information ($y$) & Observation ($x$) \\
-Parsing &   \textcolor{gray}{a sentence} & \textcolor{black}{its syntactic/semantic parse tree/graph} \\
-&&\\
-Translation &  \textcolor{gray}{a sentence} & \textcolor{black}{its translation} \\
-&&\\
-Captioning &  \textcolor{gray}{an image} & \textcolor{black}{caption in English} \\
-&&\\
-Entailment  & \textcolor{gray}{a text and hypothesis} & \textcolor{black}{entailment relation}
+~
+
+\begin{center}
+\begin{tabular}{l l}
+ {\bf Side information} ($y$) & {\bf Observation} ($x$) \\
+ \textcolor{black}{a movie review} & \textcolor{black}{sentiment} \\
+  \textcolor{black}{a translation pair} & \textcolor{black}{quality score} \\
+  \textcolor{black}{a sentence} & \textcolor{black}{its syntactic parse} \\
+  \textcolor{black}{a sentence} & \textcolor{black}{its translation} \\
+  \textcolor{black}{an image} & \textcolor{black}{caption in English} 
 \end{tabular}
-\end{small}
+\end{center}
+%\begin{footnotesize}
+%\end{footnotesize}
 
 \end{frame}
 
