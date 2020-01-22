@@ -337,14 +337,14 @@ We could:
 \end{frame}
 
 \begin{frame}{Score Function Estimator: Variance}
-Idea: standardize the "reward" $\log p(x|z, \theta)$ to have a mean at 0 and a variance of 1 \pause
+Idea: standardize the "reward" $r \defeq \log p(x|z, \theta)$ to have a mean at 0 and a variance of 1 \pause
 
 ~ 
 
 \begin{itemize}
   \setlength\itemsep{0.7em}
     \item Keep a moving average of the mean and variance $\log p(x|z, \theta)$: $\hat{\mu}$ and $\hat{\sigma^2}$. \pause
-    \item $\hat{r} = \frac{\log p(x|z, \theta)-\hat{mu}}{\hat{\sigma^2}}$
+    \item $\hat{r} = \frac{\log p(x|z, \theta)-\hat{\mu}}{\hat{\sigma^2}}$
 \end{itemize}
 
 \pause

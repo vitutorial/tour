@@ -360,9 +360,9 @@ Flip the direction of the KL
 \begin{small}
 \begin{equation*}
 \begin{aligned}
-&\argmin_{\lambda} \mathbb E_{p(x)}\left[ \KL{\alert{p(z|x, \theta)}}{q(z|x, \lambda)} \right] \\ \pause
+&\argmin_{\lambda} \mathbb E_{p(x)}\left[ \KL{\alert<1>{p(z|x, \theta)}}{q(z|x, \lambda)} \right] \\ \pause
 &= \argmin_{\lambda} \mathbb E_{p(x)}\mathbb E_{p(z|x, \theta)}\left[ \log p(z|x, \theta) - \log q(z|x, \lambda) \right] \\ \pause
-&= \argmax_{\lambda} \mathbb E_{p(x, z|\theta)}\left[ \log q(z|x, \lambda) \right] - \underbrace{\mathbb E_{p(x,z|\theta)}\left[ \log p(z|x, \theta) \right]}_{\text{constant}}  \pause
+&\stackrel{\text{asm}}{=} \argmax_{\lambda} \mathbb E_{\alert<3>{p(x, z|\theta)}}\left[ \log q(z|x, \lambda) \right] - \underbrace{\mathbb E_{p(x,z|\theta)}\left[ \log p(z|x, \theta) \right]}_{\text{constant}}  \pause
 %&\overset{\text{MC}}{\approx} \argmax_{\lambda} \log q(z|\tilde{x}, \lambda) 
 \end{aligned}
 \end{equation*}
