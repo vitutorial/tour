@@ -348,28 +348,34 @@ a distribution $ p $.
 \begin{aligned}
 \log p(x) &= \loga{\intl{p(x,z)}{z}} \\
 \pause
-&= \loga{\intl{\alert{q(z)}\frac{p(x,z)}{\alert{q(z)}}}{z}} \\
+&= \loga{\intl{\showblue{q(z)}\frac{p(x,z)}{\showblue{q(z)}}}{z}} \\
 \pause
-&= \loga{\E[q(z)]{\frac{p(x,z)}{\alert{q(z)}}}} \\ \pause
-&\geq \E[q(z)]{  \log{\frac{p(x,z)}{\alert{q(z)}}}} \\
+&= \loga{\E[\showblue{q(z)}]{\frac{p(x,z)}{\showblue{q(z)}}}} \\ \pause
+&\geq \E[\showblue{q(z)}]{  \log{\frac{p(x,z)}{\showblue{q(z)}}}} % \\
 \pause
-& = \E[q(z)] {\log{\frac{p(z|x)p(x)}{\alert{q(z)}}}}
+%& = \E[q(z)] {\log{\frac{p(z|x)p(x)}{\alert{q(z)}}}}
 \end{aligned}
 \end{equation*}
 \end{small}
+
+This is a \emph{lowerbound on the log-evidence}. \\
+Crucially, it {\bf does not require the true posterior}!
 \end{frame}
 
 \begin{frame}{VI derivation I}
+Let's gain insight about this bound
+\begin{small}
 \begin{equation*}
 \begin{aligned}
-\log p(x) &\geq 
-\E[q(z|x)] {\log{\frac{p(z|x)p(x)}{q(z)}}} \\
+\log p(x) &\geq \E[q(z)] {\log{\frac{p(x,z)}{q(z)}}} \\ \pause
+&= \E[q(z|x)] {\log{\frac{\alert{p(z|x)}\alert{p(x)}}{q(z)}}} \\
 \pause
-&= \intl{ q(z) \log{\frac{p(z|x)}{q(z)}}}{z} + \log p(x) \\
+&= \intl{ q(z) \log{\frac{\alert{p(z|x)}}{q(z)}}}{z} + \log \alert{p(x)} \\
 \pause
-&= -\KL{q(z)}{p(z|x)} + \log p(x)
+&= -\underbrace{\KL{q(z)}{\alert{p(z|x)}}}_{\ge 0} + \log \alert{p(x)}
 \end{aligned}
 \end{equation*}
+\end{small}
 \pause
 We have derived a lower bound on the log-evidence whose gap is exactly $ \KL{q(z)}{p(z|x)} $.
 \end{frame}
@@ -393,16 +399,17 @@ Recall that we want to find $ q(z) $ such that $ \KL{q(z)}{p(z|x)} $ is small.
 \begin{small}
 \begin{equation*}
 \begin{aligned}
-&\underset{q(z)}{\argmax} -\KL{q(z)}{p(z|x)} \\ 
+&\underset{q(z)}{\argmax} -\KL{q(z)}{\alert{p(z|x)}} \\ 
 \pause
-&= \underset{q(z)}{\argmax} \intl{ q(z) \log{\frac{p(z|x)}{q(z)}}}{z} \\
+&= \underset{q(z)}{\argmax} \intl{ q(z) \log{\frac{\alert{p(z|x)}}{q(z)}}}{z} \\
 \pause
-&= \underset{q(z)}{\argmax} \intl{ q(z) \log{\frac{p(z,x)}{p(x)q(z)}}} {z} \\
+&= \underset{q(z)}{\argmax} \intl{ q(z) \log{\frac{p(x,z)}{\alert{p(x)}q(z)}}} {z} \\
 \pause
-&= \underset{q(z)}{\argmax} \intl{ q(z) \log{p(z,x)}} {z} - \intl{ q(z) \log q(z)} {z} 
-- \overbrace{\log p(x)}^{constant} \\
+&= \underset{q(z)}{\argmax} \intl{ q(z) \log{\frac{p(x,z)}{q(z)}}} {z}  
+- \overbrace{\log \alert{p(x)}}^{constant} \\
 \pause
-&= \underset{q(z)}{\argmax}~\E[q(z)]{\log p(x,z) } + \Ent{q(z)}
+&= \underset{q(z)}{\argmax}~ \underbrace{\int q(z) \log p(x,z) \dd z}_{\E[q(z)]{\log p(x,z)}} - \underbrace{\int q(z) \log q(z) \dd z}_{-\Ent{q(z)}} \\ 
+%&= \underset{q(z)}{\argmax}~\E[q(z)]{\log p(x,z) } + \Ent{q(z)}
 \end{aligned}
 \end{equation*}
 \end{small}
@@ -434,13 +441,14 @@ This finds us the best posterior approximation for a \textbf{given model}.
 \underset{q(z), p(x,z)}{\argmax}~\E[q(z)]{\log p(x,z) } + \Ent{q(z)}
 \end{equation*}
 \end{block}
+This optimises the posterior approximation and the \textbf{lowerbound} (not the evidence)
 \end{frame}
 
 \begin{frame}{Performing VI (Frequentist Case)}
 VI in its basic form can be performed via coordinate ascent. This can be done as a 2-step procedure.
 \begin{enumerate}
 \pause
-\item Maximize (regularised) expected log-density.
+\item Maximise (regularised) expected log-density.
 \begin{equation*}
 \underset{q(z)}{\argmax}~\E[q(z)]{\log{p(x,z)}} + \Ent{q(z)}
 \end{equation*}
