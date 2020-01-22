@@ -337,14 +337,14 @@ We could:
 \end{frame}
 
 \begin{frame}{Score Function Estimator: Variance}
-Idea: standardize the "reward" $r \defeq \log p(x|z, \theta)$ to have a mean at 0 and a variance of 1 \pause
+Idea: standardize the "reward" $r(z) \defeq \log p(x|z, \theta)$ to have a mean at 0 and a variance of 1 \pause
 
 ~ 
 
 \begin{itemize}
   \setlength\itemsep{0.7em}
     \item Keep a moving average of the mean and variance $\log p(x|z, \theta)$: $\hat{\mu}$ and $\hat{\sigma^2}$. \pause
-    \item $\hat{r} = \frac{\log p(x|z, \theta)-\hat{\mu}}{\hat{\sigma^2}}$
+    \item $\hat{r}(z) = \frac{\log p(x|z, \theta)-\hat{\mu}}{\hat{\sigma^2}}$
 \end{itemize}
 
 \pause
@@ -354,7 +354,7 @@ Idea: standardize the "reward" $r \defeq \log p(x|z, \theta)$ to have a mean at 
 \begin{aligned}
 \pdv{\lambda}\E[q(z|x,\lambda)]{\log p(x|z,\theta)}
 &= \mathbb E_{q(z|x,\lambda)} \left[  \log p(x|z,\theta)  \pdv{\lambda}\log q(z|x,\lambda)\right]\\ \pause
-&\approx E_{q(z|x,\lambda)} \left[  \hat{r} \pdv{\lambda}\log q(z|x,\lambda)\right]
+&\approx E_{q(z|x,\lambda)} \left[  \hat{r}(z) \pdv{\lambda}\log q(z|x,\lambda)\right]
 \end{aligned}
 \end{equation*}
 \end{small}
