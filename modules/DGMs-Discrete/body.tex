@@ -62,7 +62,7 @@ And we've developed the ELBO
 \log p(x) &= \log \int p(z, x) \dd z ~ \pause = \log \int q(z|x) \frac{p(z, x)}{q(z|x)} \dd z \\ \pause
 &\overset{\text{JI}}{\ge} \underbrace{\E[q(z|x)]{\log \frac{p(z, x)}{q(z|x)}} }_{\ELBO} %\\ &= \E[q(z|x)]{\log p(x, z)} + \Ent{q(z|x)}
 & \\ \pause
-\ELBO &= \E[q(z|x)]{\log \frac{p(z|x)p(x)}{q(z|x)}} \\
+\ELBO &= \E[q(z|x)]{\log \frac{p(z|x)p(x)}{q(z|x)}} \\ \pause
 %&=\E[q(z|x)]{\log \frac{p(z|x)}{q(z|x)}} + \log p(x) \\
 &=-\underbrace{\KL{q(z|x)}{p(z|x)}}_{\text{gap}} + \log p(x)
 \end{aligned}
