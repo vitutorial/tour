@@ -106,7 +106,7 @@ $ p(x|\theta) = \int p(z) p(x|z,\theta)  \dd z $ is intractable!
 
 \vspace{-20pt}
 \begin{equation*}
-\argmax_{\theta,\lambda} ~ \E[q(z|x, \lambda)]{\log p(x|Z, \theta)} - \KL{q(z|x, \lambda)}{p(z)}
+\argmax_{\theta,\lambda} ~ \E[q(z|x, \lambda)]{\log p(x|z, \theta)} - \KL{q(z|x, \lambda)}{p(z)}
 \end{equation*}
 
 
@@ -364,7 +364,7 @@ Analytical computation of $ -\KL{q(z|x,\lambda)}{p(z)} $:
     \edge{z,theta}{x};
     
     % add plates
-    \plate {x-sentence} {(x)} {$ N $};
+    \plate {x-sentence} {(x)} {$ n $};
    
     %\node[right = of z]		(lambda)		{$ \lambda $};   
     %\edge[dashed, bend right]{x}{z};
@@ -375,7 +375,7 @@ Analytical computation of $ -\KL{q(z|x,\lambda)}{p(z)} $:
     	Generative story 
     	\begin{itemize}
 			\item Draw a document embedding $Z \sim \mathcal N(0, I)$
-			\item Draw $N$ words\\
+			\item Draw $n$ words\\
 			$X_i|z \sim \Cat(f(z; \theta))$
 		\end{itemize}
     \end{column}
@@ -387,7 +387,7 @@ Analytical computation of $ -\KL{q(z|x,\lambda)}{p(z)} $:
     Designing $f(z, \theta)$    \pause
     \begin{equation*}
 	\begin{aligned}						
-		h &= \relu(W_1z+b_1) \\ \pause
+		h &= \tanh(W_1z+b_1) \\ \pause
 		f(z, \theta) &= \alert{\softmax}(W_2h + b_2) \\		\pause
 		\theta &= \{W_1, b_1, W_2, b_2\}
 	\end{aligned}
@@ -411,7 +411,7 @@ Analytical computation of $ -\KL{q(z|x,\lambda)}{p(z)} $:
     \edge{z,theta}{x};
     
     % add plates
-    \plate {x-sentence} {(x)} {$ N $};
+    \plate {x-sentence} {(x)} {$ n $};
    
     %\node[right = of z]		(lambda)		{$ \lambda $};   
     %\edge[dashed, bend right]{x}{z};
@@ -422,7 +422,7 @@ Analytical computation of $ -\KL{q(z|x,\lambda)}{p(z)} $:
     	Generative story 
     	\begin{itemize}
 			\item Draw a document embedding $Z \sim \mathcal N(0, I)$
-			\item Draw $N$ words\\
+			\item Draw $n$ words\\
 			$X_i|z \sim \Cat(f(z; \theta))$
 		\end{itemize}
     \end{column}
@@ -435,8 +435,8 @@ Analytical computation of $ -\KL{q(z|x,\lambda)}{p(z)} $:
 	\begin{small}
     \begin{equation*}
 	\begin{aligned}						
-		p(x|z, \theta) &= \prod_{i=1}^N p(x_i|z, \theta) \pause = \prod_{i=1}^N \Cat(x_i|\underbrace{f(z; \theta)}_{=\psi}) \\ \pause
-		&= \prod_{i=1}^N \psi_{x_i}
+		p(x|z, \theta) &= \prod_{i=1}^n p(x_i|z, \theta) \pause = \prod_{i=1}^n \Cat(x_i|\underbrace{f(z; \theta)}_{=\psi}) \\ \pause
+		&= \prod_{i=1}^n \psi_{x_i}
 	\end{aligned}
 	\end{equation*}
 	\end{small}
@@ -459,7 +459,7 @@ Analytical computation of $ -\KL{q(z|x,\lambda)}{p(z)} $:
     \edge{z,theta}{x};
     
     % add plates
-    \plate {x-sentence} {(x)} {$ N $};
+    \plate {x-sentence} {(x)} {$ n $};
    
     %\node[right = of z]		(lambda)		{$ \lambda $};   
     %\edge[dashed, bend right]{x}{z};
@@ -470,7 +470,7 @@ Analytical computation of $ -\KL{q(z|x,\lambda)}{p(z)} $:
     	Generative story 
     	\begin{itemize}
 			\item Draw a document embedding $Z \sim \mathcal N(0, I)$
-			\item Draw $N$ words\\
+			\item Draw $n$ words\\
 			$X_i|z \sim \Cat(f(z; \theta))$
 		\end{itemize}
     \end{column}
@@ -483,8 +483,8 @@ Analytical computation of $ -\KL{q(z|x,\lambda)}{p(z)} $:
 	\begin{small}
     \begin{equation*}
 	\begin{aligned}						
-		p(x|\theta) &= \int p(z) \prod_{i=1}^N p(x_i|z, \theta) \dd{z} \pause \\
-		&= \alert{\int \mathcal N(z|0, I)} \prod_{i=1}^N \Cat(x_i|\alert{f(z; \theta)}) \alert{\dd{z}}
+		p(x|\theta) &= \int p(z) \prod_{i=1}^n p(x_i|z, \theta) \dd{z} \pause \\
+		&= \alert{\int \mathcal N(z|0, I)} \prod_{i=1}^n \Cat(x_i|\alert{f(z; \theta)}) \alert{\dd{z}}
 	\end{aligned}
 	\end{equation*}
 	\end{small}
@@ -512,7 +512,7 @@ Analytical computation of $ -\KL{q(z|x,\lambda)}{p(z)} $:
     \edge{z,theta}{x};
     
     % add plates
-    \plate {x-sentence} {(x)} {$ N $};
+    \plate {x-sentence} {(x)} {$ n $};
    
     \node[right = of z]		(lambda)		{$ \lambda $};   
     \edge[dashed, blue, bend right]{x}{z};
@@ -528,8 +528,8 @@ Analytical computation of $ -\KL{q(z|x,\lambda)}{p(z)} $:
     \begin{column}{0.35\textwidth}
     \begin{equation*}
 	\begin{aligned}		
-		s &= \sum_{i=1}^N E_{x_i} \pause \\
-		h &= \relu(M_1s+c_1)  \pause 		
+		s &= \sum_{i=1}^n E_{x_i} \pause \\
+		h &= \tanh(M_1s+c_1)  \pause 		
 	\end{aligned}
 	\end{equation*}
 	\end{column}
@@ -574,7 +574,7 @@ Analytical computation of $ -\KL{q(z|x,\lambda)}{p(z)} $:
     \edge{z,theta}{x};
     
     % add plates
-    \plate {x-sentence} {(x)} {$ N $};
+    \plate {x-sentence} {(x)} {$ n $};
    
     \node[right = of z]		(lambda)		{$ \lambda $};   
     \edge[dashed, blue, bend right]{x}{z};
@@ -590,8 +590,8 @@ Analytical computation of $ -\KL{q(z|x,\lambda)}{p(z)} $:
     \vspace{-10pt}
 	\begin{equation*}
 	\begin{aligned}		
-		\log p(x|\theta) &\ge \mathbb E_{\epsilon \sim \mathcal N(0, I)}\left[ \textstyle\sum_{i=1}^N \log \psi_{x_i}\right] \\
-		&- \KL{\mathcal N(z|u, s^2)}{\mathcal N(z|0, I)}
+		\log p(x|\theta) &\ge \mathbb E_{\epsilon \sim \mathcal N(0, I)}\left[ \textstyle\sum_{i=1}^n \log \psi_{x_i}\right] \\
+		&- \KL{\mathcal N(u, s^2)}{\mathcal N(0, I)}
 	\end{aligned}
 	\end{equation*}
 	\textcolor{gray}{{\small where $u = \mu(x; \lambda)$, $s = \sigma(x; \lambda)$, and $\psi = f(z = u + \epsilon \odot s, \theta)$ }}
@@ -633,10 +633,10 @@ We call such models \emph{strong generators}.
 
 \begin{frame}{Diagnosing posterior collapse}
 
-Fact: the \emph{rate} $R = \mathbb E_X[\KL{q(z|x, \lambda)}{p(z)}]$ is an upperbound on $I(X; Z)$ \ack{$I(X;Z) = \int \int q(x,z) \log \frac{q(x,z)}{q_\star(x)q(z)}$ and $q(x,z) = q_\star(x)q(z|x, \lambda)$.} \pause
+Fact: the \emph{rate} $R = \mathbb E_X[\KL{q(z|x, \lambda)}{p(z)}]$ is an upperbound on $I(X; Z|\lambda)$ \ack{$I(X;Z|\lambda) = \int \int q(x,z|\lambda) \log \frac{q(x,z|\lambda)}{q_\star(x)q(z|\lambda)} \dd x \dd z$ and $q(x,z|\lambda) = q_\star(x)q(z|x, \lambda)$.} \pause
 
 \begin{itemize}
-	\item if $\KL{q(z|x, \lambda)}{p(z)}$ is close to $0$ to most training instances, then $I(X; Z)$ is $0$ or negligible; \pause
+	\item if $\KL{q(z|x, \lambda)}{p(z)}$ is close to $0$ to most training instances, then $I(X; Z|\lambda)$ is $0$ or negligible; \pause
 	\item greedy decoding $\argmax_{x_i} \log p(x_i|z, x_{<i})$ from a prior sample $z \sim p(z)$ is deterministic; \pause
 	\item this does not mean ancestral samples from $p(x|z, \theta)$ will be bad
 \end{itemize}
@@ -716,9 +716,11 @@ This can lead to bad generalisation and/or poor samples when generating from the
 Try one of our notebooks, e.g.
 \begin{itemize}
 	\item Original VAE: MNIST\\
-	\url{https://github.com/philschulz/VITutorial/blob/master/code/vae_notebook_pytorch.ipynb}
+	\url{https://github.com/vitutorial/VITutorial/blob/master/code/vae_notebook_pytorch.ipynb}
 	\item SentenceVAE\\
 	\url{https://github.com/probabll/dgm4nlp/tree/master/notebooks/sentencevae}	
+	\item WordVAE \\
+	\url{https://github.com/vitutorial/exercises/tree/master/WordVAE}
 \end{itemize}
 \end{frame}
 
