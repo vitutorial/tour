@@ -1,14 +1,98 @@
-\section{Variance reduction}
+\section{Recap: Score Function Estimator}
 
-\begin{frame}{When variance is high we can}
+\frame{\tableofcontents[currentsection]}
+
+\begin{frame}{Score Function Estimator}
+
+We are interested in computing
+\vspace{-5pt}
+\begin{equation*}
+\begin{aligned}
+&\pdv{\lambda}\E[q_\lambda(z|x)]{\log p_\theta(x|z)} \\  \pause
+%&= \pdv{\lambda} \sum_z q(z|x,\lambda)\log p(x|z, \theta)  \\ 
+&=  \sum_z \alert{\pdv{\lambda}(q(z|x, \lambda))} \log p(x|z, \theta) \\  \pause
+&= \sum_z \textcolor{blue}{q(z|x, \lambda) \pdv{\lambda}(\log q(z|x, \lambda))} \log p(x|z, \theta)  \\ \pause
+&= \underbrace{\mathbb E_{q(z|x, \lambda)} \left[  \log p(x|z, \theta)  \pdv{\lambda}\log q(z|x, \lambda)\right]}_{\text{expected gradient :)}}
+\end{aligned}
+\end{equation*}
+
+
+\end{frame}
+
+\begin{frame}{Score Function Estimator}
+
+We can now build an MC estimator
+\begin{equation*}
+\begin{aligned}
+&\pdv{\lambda}\E[q(z|x,\lambda)]{\log p(x|z,\theta)} \\ 
+&= \mathbb E_{q(z|x,\lambda)} \left[  \log p(x|z,\theta)  \pdv{\lambda}\log q(z|x,\lambda)\right] \\ \pause 
+&\overset{\text{MC}}{\approx} \frac{1}{S} \sum_{s=1}^S \alert{\log p(x|z^{(s)}, \theta)} \pdv{\lambda}\log q(z^{(s)}|x, \lambda) \\
+&\textcolor{gray}{\text{where } z^{(s)} \sim q(z|x, \lambda)}
+\end{aligned}
+\end{equation*}
+\end{frame}
+
+\begin{frame}{Score Function Estimator: Variance}
+\begin{small}
+\begin{equation*}
+\begin{aligned}
+&\pdv{\lambda}\E[q(z|x,\lambda)]{\log p(x|z,\theta)}
+= \mathbb E_{q(z|x,\lambda)} \left[  \log p(x|z,\theta)  \pdv{\lambda}\log q(z|x,\lambda)\right]
+\end{aligned}
+\end{equation*}
+\end{small}
+
+
+Empirically this estimator often exhibits high variance.
+
+~
+
+\pause 
+
+\begin{itemize}
+	\item the magnitude of $\log p(x|z, \theta)$ varies widely \pause 
+	\item the model likelihood does not contribute to direction of gradient 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Score Function Estimator: Variance}
+Idea: standardize the "reward" $r(z) \defeq \log p(x|z, \theta)$ to have a mean at 0 and a variance of 1 \pause
+
+~ 
+
+\begin{itemize}
+  \setlength\itemsep{0.7em}
+    \item Keep a moving average of the mean and variance $\log p(x|z, \theta)$: $\hat{\mu}$ and $\hat{\sigma^2}$. \pause
+    \item $\hat{r}(z) = \frac{\log p(x|z, \theta)-\hat{\mu}}{\sqrt{\hat{\sigma^2}}}$
+\end{itemize}
 
 \pause
 
-\begin{itemize}
-	\item sample more \\ \pause
-	\item use variance reduction techniques (e.g. baselines and control variates)\\ 
-\end{itemize}
+\begin{small}
+\begin{equation*}
+\begin{aligned}
+\pdv{\lambda}\E[q(z|x,\lambda)]{\log p(x|z,\theta)}
+&= \mathbb E_{q(z|x,\lambda)} \left[  \log p(x|z,\theta)  \pdv{\lambda}\log q(z|x,\lambda)\right]\\ \pause
+&\approx E_{q(z|x,\lambda)} \left[  \hat{r}(z) \pdv{\lambda}\log q(z|x,\lambda)\right]
+\end{aligned}
+\end{equation*}
+\end{small}
+
 \end{frame}
+
+\begin{frame}{Score Function Estimator: Variance}
+
+\begin{itemize}
+    \item We can show that using these \emph{baselines} do not bias the estimator. \pause
+    \item More generally, we can design more sophisticated \emph{control variates} that further reduce the variance.
+\end{itemize}
+
+\end{frame}
+
+\section{Control Variates and Baselines}
+
+\frame{\tableofcontents[currentsection]}
 
 \begin{frame}{Control variates}
 
@@ -125,31 +209,31 @@ an $ L_{2} $-loss.
 \end{equation*}
 \end{frame}
 
-
-
-
 \begin{frame}{Summary}
+    
 \begin{itemize}
-\item Wake-Sleep: train inference and generation networks with separate objectives
-\pause
-\item NVIL: a single objective (ELBO) for both models\\ \pause
-\item Use score function estimator\\ 
-\pause
-\item Always use baselines for variance reduction!
+    \item The score function estimator inhibits high variance. \pause
+    \item We can design control variates that reduce estimator variance, yet do not bias the estimator!
 \end{itemize}
+
 \end{frame}
+
 
 
 \begin{frame}[allowframebreaks]{Literature}
 %\nocite{KingmaWelling:2013}
+<<<<<<< HEAD
+=======
+% \nocite{HintonEtAl:1995}
+% \nocite{MnihNVIL}
+>>>>>>> c9d66c768b8484311dcf5667a54fdd4b6549ecbe
  \nocite{PaisleyEtAl:2012}
- \nocite{RanganathEtAl:2014}
+%  \nocite{RanganathEtAl:2014}
  \nocite{Williams:1992}
- \nocite{greensmith2004variance} 
- \nocite{gu2015muprop}
- \nocite{tucker2017rebar}
- \nocite{grathwohl2017backpropagation}
-
+%  \nocite{greensmith2004variance} 
+%  \nocite{gu2015muprop}
+%  \nocite{tucker2017rebar}
+%  \nocite{grathwohl2017backpropagation}
 
 
 \bibliographystyle{unsrtnat}
