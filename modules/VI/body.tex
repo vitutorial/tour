@@ -368,7 +368,7 @@ Let's gain insight about this bound
 \begin{equation*}
 \begin{aligned}
 \log p(x) &\geq \E[q(z)] {\log{\frac{p(x,z)}{q(z)}}} \\ \pause
-&= \E[q(z|x)] {\log{\frac{\alert{p(z|x)}\alert{p(x)}}{q(z)}}} \\
+&= \E[q(z)] {\log{\frac{\alert{p(z|x)}\alert{p(x)}}{q(z)}}} \\
 \pause
 &= \intl{ q(z) \log{\frac{\alert{p(z|x)}}{q(z)}}}{z} + \log \alert{p(x)} \\
 \pause
@@ -664,7 +664,7 @@ $$Z_j \sim \Bernoulli(\lambda_j)$$
 
 Amortise the cost of inference using NNs
 \begin{equation*}
-q(z_1, \ldots, z_K|x) = \prod_{j=1}^K q_{\alert{\lambda}}(z_j|x)
+q(z_1, \ldots, z_K|\alert{x}) = \prod_{j=1}^K q_{\alert{\lambda}}(z_j|\alert{x})
 \end{equation*} \pause
 ~ still mean field
 $$Z_j|x \sim \Bernoulli(b_j)$$\\  \pause
@@ -798,8 +798,10 @@ $ p(x) $ cannot be computed efficiently.
 \item A common approximation is the \textbf{mean field} approximation which assumes that all latent variables
 are independent:
 \begin{equation*}
-q(z) = \prod_{i=1}^{N} q(z_{i})
+q(z|\lambda) = \prod_{i=1}^{N} q(z_{i}|\lambda_i)
 \end{equation*}
+\item In amortised VI, we condition on a data point $x$ to parameterise a collection of variational factors $\prod_{i=1}^N q(z_i|x, \lambda)$
+
 \end{itemize}
 \end{frame}
 
